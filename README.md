@@ -7,7 +7,10 @@ First step for my roguelike attempt. I choosed to try Bracketlib, instead of my 
 Today was the day of the project setup and the first steps of my Hero... He's alive (in a dark world)
 
 ## Day 2 
-*draft*
-- File structure refactoring
-- Add an action manager system
-- Add map element
+After a file structure refactoring, I created some usefull struct like `Element` to populate the world with some static element, then,
+I started the world generation (first a unstructured random world) for my hero.
+So, the map is ugly, with awfull color... But it's here.
+
+Tomorrow, I would try to change the format of the terminal. The size and, over all, I will try to change the font !!
+
+## Day 3

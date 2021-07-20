@@ -1,8 +1,10 @@
 use bracket_lib::prelude::RGBA;
 use bracket_lib::prelude::{BLUE, WHITE};
 use crate::dailyrium::{Sprite, Action};
+use crate::engine::give_id;
 
 pub struct LivingEntity {
+    pub id: u32,
     pub x: i32,
     pub y: i32,
     pub sprite: Sprite,
@@ -18,6 +20,7 @@ impl LivingEntity {
         
         };
         LivingEntity {
+            id: give_id(),
             x,
             y,
             sprite,

@@ -1,5 +1,6 @@
 use bracket_lib::prelude::RGBA;
 
+#[derive(Copy, Clone)]
 pub enum ElementType {
 	Floor,
 	Wall,

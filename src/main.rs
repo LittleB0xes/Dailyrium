@@ -10,22 +10,43 @@ use living_entity::LivingEntity;
 mod engine;
 use engine::*;
 
+mod world_factory;
+use world_factory::*;
+
+mod elements;
+use elements::Element;
+
 struct State {
     player: LivingEntity,
+    level_map: Vec<Element>,
 }
 
 impl State {
     fn new() -> State {
         State {
             player: LivingEntity::new(5, 5),
+            level_map: random_test_world(80, 50),
         }
     }
+
 }
 
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         action_manager(&mut self.player);
         ctx.cls();
+
+        for tile in self.level_map.iter() {
+            ctx.set(
+                tile.x,
+                tile.y,
+                tile.sprite.fg_color,
+                tile.sprite.bg_color,
+                tile.sprite.glyph,
+            );
+
+        }
+
         ctx.print(1, 1, "Hello Bracket World");
 
         ctx.set(

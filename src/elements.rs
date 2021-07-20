@@ -1,7 +1,46 @@
 use crate::dailyrium::{Sprite, ElementType};
+use crate::engine::give_id;
+use bracket_lib::prelude::{BLACK, WHITE, RGBA};
+
 pub struct Element {
-	x: i32,
-	y: i32,
-	glyph: Sprite,
+	pub id: u32,
+	pub x: i32,
+	pub y: i32,
+	pub sprite: Sprite,
+	pub nature: ElementType,
+}
+
+impl Element {
+	pub fn new(x: i32, y: i32, t: ElementType) -> Element {
+		let g = Sprite {
+			glyph: '.' as u16,
+			fg_color: RGBA::named(WHITE),
+			bg_color: RGBA::named(BLACK),
+		};
+		let mut element = Element{
+			id: give_id(),
+			x,
+			y,
+			sprite: g,
+			nature: t,
+		};
+
+		match t {
+			ElementType::Floor 	=> element.to_floor(),
+			ElementType::Wall 	=> element.to_wall(),
+		}
+
+		element
+	}
+
+	fn to_floor(&mut self) {
+		self.sprite.glyph = '.' as u16;
+		self.sprite.fg_color = RGBA::from_u8(125, 100, 125, 255);
+	}
+	fn to_wall(&mut self) {
+		self.sprite.glyph = '#' as u16;
+		self.sprite.fg_color = RGBA::from_u8(25, 10, 25, 255);
+		self.sprite.bg_color = RGBA::from_u8(125, 100, 125, 255);
+	}
 }
 
