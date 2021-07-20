@@ -1,1 +1,5 @@
+# ignore temporary emacs files
+
+*~
+
 /target
