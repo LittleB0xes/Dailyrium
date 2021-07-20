@@ -1,11 +1,13 @@
 use bracket_lib::prelude::RGBA;
 use bracket_lib::prelude::*;
 
+mod dailyrium;
+use dailyrium::Action;
+
 mod living_entity;
 use living_entity::LivingEntity;
 
 mod engine;
-use engine::Action;
 use engine::*;
 
 struct State {
@@ -29,9 +31,9 @@ impl GameState for State {
         ctx.set(
             self.player.x,
             self.player.y,
-            RGBA::named(WHITE),
-            RGBA::named(BLUE),
-            self.player.glyph,
+            self.player.sprite.fg_color,
+            self.player.sprite.bg_color,
+            self.player.sprite.glyph,
         );
 
         match ctx.key {

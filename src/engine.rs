@@ -1,9 +1,6 @@
+use crate::dailyrium::Action;
 use crate::living_entity::LivingEntity;
 
-pub enum Action {
-    MOVE(i32, i32),
-    WAITING,
-}
 
 pub fn action_manager(ent: &mut LivingEntity) {
     match ent.action {
