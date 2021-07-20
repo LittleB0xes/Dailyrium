@@ -1,6 +1,0 @@
-pub enum Action {
-    MOVE(i32, i32),
-    WAITING,
-}
-
-pub fn action_manager(ent: LivingEntity) {}
