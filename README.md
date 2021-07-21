@@ -24,3 +24,5 @@ Better sooner rather than later
 I also try a new way to manage the element's propertie. I use a `Vec<Propertie>` where `Propertie` is an enum. And I use the `any` iterator to check what i want to check. Perhaps a bad idea... Wait and see (usually i use a bunch of properties in struct)
 My hero can now hit the wall... Outch!
 Some monsters are born ... they are alcoholic zombies (random walk with in-map checking)
+... and a last minute bonus : adding an extended `put`function in `rltetra` (for glyph and color in one call)
+

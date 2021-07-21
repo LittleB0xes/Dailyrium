@@ -39,7 +39,7 @@ impl GameState {
 		let mut npc: Vec<LivingEntity> = Vec::new();
 		
 		let mut rng = rand::thread_rng();
-		for i in 0..10 {
+		for _i in 0..10 {
 			let x = rng.gen_range(0..WIDTH);
 			let y = rng.gen_range(0..HEIGHT);
 			npc.push(LivingEntity::new(x, y, EntityType::Zombie));
@@ -62,19 +62,32 @@ impl State for GameState {
 
 		self.terminal.clear(ctx);
 		for element in self.level_map.iter() {
-			self.terminal.fg_color(element.sprite.fg_color);
-			self.terminal.bg_color(element.sprite.bg_color);
-			self.terminal.put(element.x, element.y, element.sprite.glyph);
+			//self.terminal.fg_color(element.sprite.fg_color);
+			//self.terminal.bg_color(element.sprite.bg_color);
+			//self.terminal.put(element.x, element.y, element.sprite.glyph);
+			self.terminal.put_ext(
+				element.x,
+				element.y,
+				element.sprite.glyph,
+				element.sprite.fg_color,
+				element.sprite.bg_color);
 		}
 		for npc in self.npc_list.iter() {
-			self.terminal.fg_color(npc.sprite.fg_color);
-			self.terminal.bg_color(npc.sprite.bg_color);
-			self.terminal.put(npc.x, npc.y, npc.sprite.glyph);
+			self.terminal.put_ext(
+				npc.x,
+				npc.y,
+				npc.sprite.glyph,
+				npc.sprite.fg_color,
+				npc.sprite.bg_color);
 		}
-		self.terminal.fg_color(self.player.sprite.fg_color);
-		self.terminal.bg_color(self.player.sprite.bg_color);
-		self.terminal.put(self.player.x, self.player.y, self.player.sprite.glyph);
-		self.terminal.print(0, 0, format!("Trun: {}", self.turn_count));
+		self.terminal.put_ext(
+			self.player.x,
+			self.player.y,
+			self.player.sprite.glyph,
+			self.player.sprite.fg_color,
+			self.player.sprite.bg_color);
+
+		self.terminal.print(0, 0, format!("Turn: {}", self.turn_count));
 		self.terminal.refresh(ctx);
 		Ok(())
 

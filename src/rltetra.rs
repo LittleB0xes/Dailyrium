@@ -104,6 +104,15 @@ impl Terminal {
         self.console[self.current_layer][index as usize].bg_color = self.bg_color;
     }
 
+    pub fn put_ext(&mut self, x: i32, y: i32, glyph: u16, fg: Color, bg: Color) {
+        let index = y * self.w + x;
+        self.console[self.current_layer][index as usize].glyph = glyph;
+        self.console[self.current_layer][index as usize].fg_color = fg;
+        self.console[self.current_layer][index as usize].bg_color = bg;
+
+
+    }
+
     pub fn print(&mut self, x: i32, y: i32, string: String) {
         for (i, letter) in string.chars().enumerate() {
             self.put(x + i as i32, y, letter as u16);
