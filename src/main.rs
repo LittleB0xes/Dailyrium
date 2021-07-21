@@ -1,6 +1,7 @@
 //use rand::prelude::*;
 //use tetra::graphics::Color;
 use tetra::input::{self, Key};
+use tetra::Event::KeyPressed;
 //use tetra::math::Vec2;
 use tetra::{time, Context, ContextBuilder, Event, State};
 
@@ -47,24 +48,44 @@ impl State for GameState {
 
 	fn update(&mut self, ctx: &mut Context) -> tetra::Result{
 
-		if input::is_key_pressed(ctx, Key::Up) {
-			self.player.action = Action::Move(0,-1);
+
+		//if input::is_key_pressed(ctx, Key::Up) {
+		//	self.player.action = Action::Move(0,-1);
+		//}
+		//else if input::is_key_pressed(ctx, Key::Down) {
+		//	self.player.action = Action::Move(0,1);
+		//}
+		//else if input::is_key_pressed(ctx, Key::Left) {
+		//	self.player.action = Action::Move(-1,0);
+		//}
+		//else if input::is_key_pressed(ctx, Key::Right) {
+		//	self.player.action = Action::Move(1,0);
+		//}
+		Ok(())
+	}
+
+	fn event(&mut self, ctx: &mut Context, event: Event) -> tetra::Result {
+		//println!("Event: {:?}", event);
+		match event {
+			KeyPressed{key} => {
+				match key {
+					Key::Up => {self.player.action = Action::Move(0,-1);},
+					Key::Down => {self.player.action = Action::Move(0,1);},
+					Key::Left => {self.player.action = Action::Move(-1,0);},
+					Key::Right => {self.player.action = Action::Move(1,0);},
+					_ =>{}
+				}
+				println!("Key: {:?}", key);
+			},
+			_ => {},
 		}
-		else if input::is_key_pressed(ctx, Key::Down) {
-			self.player.action = Action::Move(0,1);
-		}
-		else if input::is_key_pressed(ctx, Key::Left) {
-			self.player.action = Action::Move(-1,0);
-		}
-		else if input::is_key_pressed(ctx, Key::Right) {
-			self.player.action = Action::Move(1,0);
-		}
+
 		Ok(())
 	}
 
 }
 fn main() -> tetra::Result {
-    ContextBuilder::new("Hello, world!", WIDTH * CELL_SIZE, HEIGHT * CELL_SIZE)
+    ContextBuilder::new("Dailyrium", WIDTH * CELL_SIZE, HEIGHT * CELL_SIZE)
         .quit_on_escape(true)
         .build()?
         .run(GameState::new)
