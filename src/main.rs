@@ -1,81 +1,71 @@
-use bracket_lib::prelude::RGBA;
-use bracket_lib::prelude::*;
+//use rand::prelude::*;
+//use tetra::graphics::Color;
+use tetra::input::{self, Key};
+//use tetra::math::Vec2;
+use tetra::{time, Context, ContextBuilder, Event, State};
 
+mod rltetra;
 mod dailyrium;
-use dailyrium::Action;
-
-mod living_entity;
-use living_entity::LivingEntity;
-
 mod engine;
-use engine::*;
+mod living_entity;
 
-mod world_factory;
-use world_factory::*;
+use living_entity::LivingEntity;
+use dailyrium::Action;
+use engine::action_manager;
 
-mod elements;
-use elements::Element;
+use rltetra::Terminal;
 
-struct State {
-    player: LivingEntity,
-    level_map: Vec<Element>,
+const HEIGHT: i32 = 50;
+const WIDTH: i32 = 80;
+const CELL_SIZE: i32 = 16;
+
+struct GameState {
+	terminal: Terminal,
+	player: LivingEntity,
 }
 
-impl State {
-    fn new() -> State {
-        State {
-            player: LivingEntity::new(5, 5),
-            level_map: random_test_world(80, 50),
-        }
-    }
+impl GameState {
+	fn new(ctx: &mut Context) -> tetra::Result<GameState> {
+		Ok(GameState{
+			terminal: Terminal::new(ctx, WIDTH, HEIGHT, CELL_SIZE, CELL_SIZE),
+			player: LivingEntity::new(10, 10),
+		})
 
+	}
 }
 
-impl GameState for State {
-    fn tick(&mut self, ctx: &mut BTerm) {
-        action_manager(&mut self.player);
-        ctx.cls();
+impl State for GameState {
+	fn draw(&mut self, ctx: &mut Context) -> tetra::Result {
+		action_manager(&mut self.player);
 
-        for tile in self.level_map.iter() {
-            ctx.set(
-                tile.x,
-                tile.y,
-                tile.sprite.fg_color,
-                tile.sprite.bg_color,
-                tile.sprite.glyph,
-            );
+		self.terminal.clear(ctx);
+		self.terminal.put(self.player.x, self.player.y, self.player.sprite.glyph);
+		self.terminal.refresh(ctx);
+		Ok(())
 
-        }
+	}
 
-        ctx.print(1, 1, "Hello Bracket World");
+	fn update(&mut self, ctx: &mut Context) -> tetra::Result{
 
-        ctx.set(
-            self.player.x,
-            self.player.y,
-            self.player.sprite.fg_color,
-            self.player.sprite.bg_color,
-            self.player.sprite.glyph,
-        );
+		if input::is_key_pressed(ctx, Key::Up) {
+			self.player.action = Action::Move(0,-1);
+		}
+		else if input::is_key_pressed(ctx, Key::Down) {
+			self.player.action = Action::Move(0,1);
+		}
+		else if input::is_key_pressed(ctx, Key::Left) {
+			self.player.action = Action::Move(-1,0);
+		}
+		else if input::is_key_pressed(ctx, Key::Right) {
+			self.player.action = Action::Move(1,0);
+		}
+		Ok(())
+	}
 
-        match ctx.key {
-            None => {}
-            Some(key) => match key {
-                VirtualKeyCode::Up => self.player.action = Action::MOVE(0, -1),
-                VirtualKeyCode::Down => self.player.action = Action::MOVE(0, 1),
-                VirtualKeyCode::Right => self.player.action = Action::MOVE(1, 0),
-                VirtualKeyCode::Left => self.player.action = Action::MOVE(-1, 0),
-                _ => {}
-            },
-        }
-    }
 }
-
-fn main() -> BError {
-    let context = BTermBuilder::simple80x50()
-        .with_title("Hello Minimal Bracket World")
-        .with_tile_dimensions(12, 12) // Scale the font
-        .build()?;
-
-    let gs: State = State::new();
-    main_loop(context, gs)
+fn main() -> tetra::Result {
+    ContextBuilder::new("Hello, world!", WIDTH * CELL_SIZE, HEIGHT * CELL_SIZE)
+        .quit_on_escape(true)
+        .build()?
+        .run(GameState::new)
 }

@@ -1,4 +1,4 @@
-use bracket_lib::prelude::RGBA;
+use tetra::graphics::Color;
 
 #[derive(Copy, Clone)]
 pub enum ElementType {
@@ -7,12 +7,12 @@ pub enum ElementType {
 }
 
 pub enum Action {
-    MOVE(i32, i32),
-    WAITING,
+    Move(i32, i32),
+    Waiting,
 }
 
 pub struct Sprite {
 	pub glyph: u16,
-	pub fg_color: RGBA,
-	pub bg_color: RGBA
+	pub fg_color: Color,
+	pub bg_color: Color
 }

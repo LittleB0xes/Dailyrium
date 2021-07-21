@@ -1,5 +1,4 @@
-use bracket_lib::prelude::RGBA;
-use bracket_lib::prelude::{BLUE, WHITE};
+use tetra::graphics::Color;
 use crate::dailyrium::{Sprite, Action};
 use crate::engine::give_id;
 
@@ -15,8 +14,8 @@ impl LivingEntity {
     pub fn new(x: i32, y: i32) -> LivingEntity {
         let sprite = Sprite{
             glyph: '@' as u16,
-            fg_color: RGBA::named(WHITE),
-            bg_color: RGBA::named(BLUE),
+            fg_color: Color::rgba8(255,255,255,255),
+            bg_color: Color::rgba8(0,0,255,255),
         
         };
         LivingEntity {
@@ -24,7 +23,7 @@ impl LivingEntity {
             x,
             y,
             sprite,
-            action: Action::WAITING,
+            action: Action::Waiting,
         }
     }
 

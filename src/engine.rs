@@ -12,9 +12,9 @@ pub fn give_id() -> u32 {
 
 pub fn action_manager(ent: &mut LivingEntity) {
     match ent.action {
-        Action::MOVE(dx, dy) => {
+        Action::Move(dx, dy) => {
             ent.move_entity(dx, dy);
-            ent.action = Action::WAITING;
+            ent.action = Action::Waiting;
         }
         _ => {}
     }

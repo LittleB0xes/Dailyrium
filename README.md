@@ -14,3 +14,7 @@ So, the map is ugly, with awfull color... But it's here.
 Tomorrow, I would try to change the format of the terminal. The size and, over all, I will try to change the font !!
 
 ## Day 3
+### Big changes...
+Only 3 day and i decide to go back to tetra game engine (and left bracket-lib, which is also amazing but not fit to me)
+
+Better sooner rather than later
