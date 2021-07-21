@@ -1,4 +1,4 @@
-use crate::dailyrium::{Sprite, ElementType};
+use crate::dailyrium::{Sprite, ElementType, Propertie};
 use crate::engine::give_id;
 use tetra::graphics::Color;
 
@@ -8,14 +8,15 @@ pub struct Element {
 	pub y: i32,
 	pub sprite: Sprite,
 	pub nature: ElementType,
+	pub properties: Vec<Propertie>,
 }
 
 impl Element {
 	pub fn new(x: i32, y: i32, t: ElementType) -> Element {
 		let g = Sprite {
 			glyph: '.' as u16,
-			fg_color: Color::rgba8(255,255,255),
-			bg_color: Color::rgba8(0,0,0),
+			fg_color: Color::rgba8(255,255,255, 255),
+			bg_color: Color::rgba8(0,0,0, 255),
 		};
 		let mut element = Element{
 			id: give_id(),
@@ -23,6 +24,7 @@ impl Element {
 			y,
 			sprite: g,
 			nature: t,
+			properties: Vec::new(),
 		};
 
 		match t {
@@ -36,6 +38,8 @@ impl Element {
 	fn to_floor(&mut self) {
 		self.sprite.glyph = '.' as u16;
 		self.sprite.fg_color = Color::rgba8(125, 100, 125, 255);
+		self.properties.push(Propertie::Crossable);
+		self.properties.push(Propertie::SeeThrought);
 	}
 	fn to_wall(&mut self) {
 		self.sprite.glyph = '#' as u16;
