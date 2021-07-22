@@ -8,6 +8,7 @@ pub struct LivingEntity {
     pub y: i32,
     pub sprite: Sprite,
     pub action: Action,
+    pub nature: EntityType,
 }
 
 impl LivingEntity {
@@ -24,6 +25,7 @@ impl LivingEntity {
             y,
             sprite,
             action: Action::Waiting,
+            nature: EntityType::Hero,
         };
 
         match t {
@@ -38,12 +40,14 @@ impl LivingEntity {
 
     fn breed_a_hero(&mut self) {
         self.sprite.glyph = '@' as u16;
+        self.nature = EntityType::Hero;
 
     }
     fn breed_a_zombie(&mut self) {
         self.sprite.glyph = 'Z' as u16;
         self.sprite.fg_color = Color::rgb8(0,0,255);
         self.sprite.bg_color = Color::rgb8(0,0,0);
+        self.nature = EntityType::Zombie;
     }
 
     pub fn move_entity(&mut self, dx: i32, dy: i32) {

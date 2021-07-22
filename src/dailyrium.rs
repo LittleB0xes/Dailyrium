@@ -6,6 +6,7 @@ pub enum ElementType {
 	Wall,
 }
 
+#[derive(Eq, PartialEq)]
 pub enum EntityType {
 	Hero,
 	Zombie,
@@ -23,7 +24,7 @@ pub struct Sprite {
 }
 
 #[derive(Eq, PartialEq, Copy, Debug, Clone)]
-pub enum Propertie {
+pub enum Property {
 	Crossable,
 	SeeThrought
 }

@@ -27,8 +27,8 @@ const CELL_SIZE: i32 = 16;
 
 struct GameState {
 	terminal: Terminal,
-	player: LivingEntity,
-	npc_list: Vec<LivingEntity>,
+	//player: LivingEntity,
+	entities: Vec<LivingEntity>,
 	level_map: Vec<Element>,
 	player_turn: bool,
 	turn_count: u32,
@@ -37,6 +37,7 @@ struct GameState {
 impl GameState {
 	fn new(ctx: &mut Context) -> tetra::Result<GameState> {
 		let mut npc: Vec<LivingEntity> = Vec::new();
+		npc.push(LivingEntity::new(10, 10, EntityType::Hero ));
 		
 		let mut rng = rand::thread_rng();
 		for _i in 0..10 {
@@ -47,8 +48,8 @@ impl GameState {
 		Ok(GameState{
 
 			terminal: Terminal::new(ctx, WIDTH, HEIGHT, CELL_SIZE, CELL_SIZE),
-			player: LivingEntity::new(10, 10, EntityType::Hero ),
-			npc_list: npc,
+			//player: LivingEntity::new(10, 10, EntityType::Hero ),
+			entities: npc,
 			level_map: random_test_world(WIDTH, HEIGHT),
 			player_turn: true,
 			turn_count: 0,
@@ -62,9 +63,6 @@ impl State for GameState {
 
 		self.terminal.clear(ctx);
 		for element in self.level_map.iter() {
-			//self.terminal.fg_color(element.sprite.fg_color);
-			//self.terminal.bg_color(element.sprite.bg_color);
-			//self.terminal.put(element.x, element.y, element.sprite.glyph);
 			self.terminal.put_ext(
 				element.x,
 				element.y,
@@ -72,20 +70,14 @@ impl State for GameState {
 				element.sprite.fg_color,
 				element.sprite.bg_color);
 		}
-		for npc in self.npc_list.iter() {
+		for entity in self.entities.iter() {
 			self.terminal.put_ext(
-				npc.x,
-				npc.y,
-				npc.sprite.glyph,
-				npc.sprite.fg_color,
-				npc.sprite.bg_color);
+				entity.x,
+				entity.y,
+				entity.sprite.glyph,
+				entity.sprite.fg_color,
+				entity.sprite.bg_color);
 		}
-		self.terminal.put_ext(
-			self.player.x,
-			self.player.y,
-			self.player.sprite.glyph,
-			self.player.sprite.fg_color,
-			self.player.sprite.bg_color);
 
 		self.terminal.print(0, 0, format!("Turn: {}", self.turn_count));
 		self.terminal.refresh(ctx);
@@ -94,23 +86,22 @@ impl State for GameState {
 	}
 
 	fn update(&mut self, ctx: &mut Context) -> tetra::Result{
-		if self.player_turn {
-			let action_finish = action_manager(&mut self.player, &mut self.level_map, WIDTH, HEIGHT);
 
-			if action_finish {
-				self.turn_count += 1;
-				self.player_turn = false;
-			}
-		}
-		else {
+		// Need to be clarified (event management)
+		if !self.player_turn {
 			// NPC turn
-			for npc in self.npc_list.iter_mut() {
-				brain(npc);
+			for entity in self.entities.iter_mut() {
+				if entity.nature != EntityType::Hero {
+					brain(entity);
+				}
 			}
-			for npc in self.npc_list.iter_mut() {
-				action_manager(npc, &mut self.level_map, WIDTH, HEIGHT);
+
+			// Resolve actions for all entities
+			for entity in self.entities.iter_mut() {
+				action_manager(entity, &mut self.level_map, WIDTH, HEIGHT);
 			}
 			self.player_turn = true;
+			self.turn_count += 1;
 		}
 
 
@@ -123,14 +114,13 @@ impl State for GameState {
 			KeyPressed{key} => {
 				if self.player_turn {
 					match key {
-						Key::Up => {self.player.action = Action::Move(0,-1);},
-						Key::Down => {self.player.action = Action::Move(0,1);},
-						Key::Left => {self.player.action = Action::Move(-1,0);},
-						Key::Right => {self.player.action = Action::Move(1,0);},
+						Key::Up =>    {self.entities[0].action = Action::Move(0,-1); self.player_turn = false;},
+						Key::Down =>  {self.entities[0].action = Action::Move(0,1); self.player_turn = false;},
+						Key::Left =>  {self.entities[0].action = Action::Move(-1,0); self.player_turn = false},
+						Key::Right => {self.entities[0].action = Action::Move(1,0); self.player_turn = false},
 						_ =>{}
 					}
 				}
-				//println!("Key: {:?}", key);
 			},
 			_ => {},
 		}
