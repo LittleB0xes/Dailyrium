@@ -21,9 +21,12 @@ use living_entity::{LivingEntity, EntityType};
 use rltetra::Terminal;
 use world_factory::*;
 
-const HEIGHT: i32 = 50;
-const WIDTH: i32 = 80;
+const HEIGHT: i32 = 60;
+const WIDTH: i32 = 100;
+const UI_WIDTH: i32 = 20;
 const CELL_SIZE: i32 = 16;
+
+const UI_XOFFSET: i32 = WIDTH - UI_WIDTH;
 
 
 
@@ -44,12 +47,12 @@ impl GameState {
 
         let mut rng = rand::thread_rng();
         for _i in 0..10 {
-            let x = rng.gen_range(0..WIDTH);
+            let x = rng.gen_range(0..(WIDTH - UI_WIDTH));
             let y = rng.gen_range(0..HEIGHT);
             npc.push(LivingEntity::new(x, y, EntityType::Zombie));
         }
-        let wmap = random_test_world(WIDTH, HEIGHT);
-        let witems = random_items_spawn(&wmap, WIDTH, HEIGHT);
+        let wmap = random_test_world(WIDTH - UI_WIDTH, HEIGHT);
+        let witems = random_items_spawn(&wmap, WIDTH - UI_WIDTH, HEIGHT);
         let mut log = Vec::new();
         log.push("Welcome in Dailyrium !".to_string());
         Ok(GameState {
@@ -97,7 +100,7 @@ impl State for GameState {
             );
         }
 
-        self.terminal.print(0, 0, format!("Turn: {}", self.turn_count));
+        self.terminal.print(UI_XOFFSET, 0, format!("Turn: {}", self.turn_count));
         self.terminal.print(20, 0, format!("{}", self.play_log[0]));
         self.terminal.refresh(ctx);
         Ok(())
@@ -115,7 +118,7 @@ impl State for GameState {
 
             // Resolve actions for all entities
             for entity in self.entities.iter_mut() {
-                action_manager(entity,&mut self.items, &mut self.play_log,  &mut self.level_map, WIDTH, HEIGHT);
+                action_manager(entity,&mut self.items, &mut self.play_log,  &mut self.level_map, WIDTH - UI_WIDTH, HEIGHT);
             }
             self.player_turn = true;
             self.turn_count += 1;

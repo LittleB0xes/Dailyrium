@@ -14,6 +14,12 @@ pub struct Sprite {
 	pub bg_color: Color
 }
 
+pub struct Level {
+	width: i32,
+	height: i32,
+	
+}
+
 #[derive(Eq,PartialEq, Hash, Copy, Debug, Clone)]
 pub enum Property {
 	Crossable,
