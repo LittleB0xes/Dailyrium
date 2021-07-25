@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use tetra::graphics::{self, Color, DrawParams, Rectangle, Texture};
 use tetra::math::Vec2;
 use tetra::Context;
@@ -36,7 +37,7 @@ impl Terminal {
         let bg = Color::rgb8(0, 0, 0);
         let fg = Color::rgb8(255, 255, 255);
         let mut cons = Vec::new();
-        for l in 0..MAX_LAYER {
+        for _l in 0..MAX_LAYER {
             let mut layer = Vec::new();
             for i in 0..(w * h) as usize {
                 layer.push(Cell {

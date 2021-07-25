@@ -40,5 +40,7 @@ Some monsters are born ... they are alcoholic zombies (random walk with in-map c
 
 ## Day 5
 - Spawn some gold here
-- Move from `Vec<Property>` to `HashMap<Property, PropertyValue>. It's pretty ugly to to write but seems to be more useful and powerful
-- Pick (object) function... but no impact with inventory
+- Move from `Vec<Property>` to `HashMap<Property, PropertyValue> (need to be improved).It's pretty ugly to to write but seems to be more useful and powerful
+- Pick (object) function... but, yet, no impact with inventory
+- Refactoring with a `Level` struct, that embeds all level data. (why not a `Vec<Level>` later ?)
+- Big cleanup : 21 warnings erased

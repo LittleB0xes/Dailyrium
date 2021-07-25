@@ -64,7 +64,7 @@ impl LivingEntity {
         self.y += dy;
     }
 
-    pub fn take_item(&mut self, item: Element) {
+    pub fn _take_item(&mut self, item: Element) {
         self.inventory.push(item);
     }
 }

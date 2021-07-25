@@ -1,11 +1,7 @@
-//use rand::prelude::*;
-//use tetra::graphics::Color;
-use tetra::input::{self, Key};
+use tetra::input::Key;
 use tetra::Event::KeyPressed;
 //use tetra::math::Vec2;
-use tetra::{time, Context, ContextBuilder, Event, State};
-
-use rand::prelude::*;
+use tetra::{Context, ContextBuilder, Event, State};
 
 mod dailyrium;
 mod elements;
@@ -15,11 +11,11 @@ mod rltetra;
 mod world_factory;
 
 use dailyrium::Action;
-use elements::Element;
 use engine::{action_manager, brain};
-use living_entity::{LivingEntity, EntityType};
+use living_entity::EntityType;
 use rltetra::Terminal;
-use world_factory::*;
+
+use world_factory::Level;
 
 const HEIGHT: i32 = 60;
 const WIDTH: i32 = 100;
@@ -32,9 +28,7 @@ const UI_XOFFSET: i32 = WIDTH - UI_WIDTH;
 
 struct GameState {
     terminal: Terminal,
-    entities: Vec<LivingEntity>,
-    items: Vec<Element>,
-    level_map: Vec<Element>,
+    level: Level,
     play_log: Vec<String>,
     player_turn: bool,
     turn_count: u32,
@@ -42,26 +36,11 @@ struct GameState {
 
 impl GameState {
     fn new(ctx: &mut Context) -> tetra::Result<GameState> {
-        let mut npc: Vec<LivingEntity> = Vec::new();
-        npc.push(LivingEntity::new(10, 10, EntityType::Hero));
-
-        let mut rng = rand::thread_rng();
-        for _i in 0..10 {
-            let x = rng.gen_range(0..(WIDTH - UI_WIDTH));
-            let y = rng.gen_range(0..HEIGHT);
-            npc.push(LivingEntity::new(x, y, EntityType::Zombie));
-        }
-        let wmap = random_test_world(WIDTH - UI_WIDTH, HEIGHT);
-        let witems = random_items_spawn(&wmap, WIDTH - UI_WIDTH, HEIGHT);
         let mut log = Vec::new();
         log.push("Welcome in Dailyrium !".to_string());
         Ok(GameState {
             terminal: Terminal::new(ctx, WIDTH, HEIGHT, CELL_SIZE, CELL_SIZE),
-            //player: LivingEntity::new(10, 10, EntityType::Hero ),
-            entities: npc,
-            level_map:wmap,
-            items: witems,
-
+            level: Level::new(WIDTH - UI_WIDTH, HEIGHT),
             play_log: log,
             player_turn: true,
             turn_count: 0,
@@ -72,7 +51,7 @@ impl GameState {
 impl State for GameState {
     fn draw(&mut self, ctx: &mut Context) -> tetra::Result {
         self.terminal.clear(ctx);
-        for element in self.level_map.iter() {
+        for element in self.level.level_map.iter() {
             self.terminal.put_ext(
                 element.x,
                 element.y,
@@ -81,7 +60,7 @@ impl State for GameState {
                 element.sprite.bg_color,
             );
         }
-        for item in self.items.iter() {
+        for item in self.level.items.iter() {
             self.terminal.put_ext(
                 item.x,
                 item.y,
@@ -90,7 +69,7 @@ impl State for GameState {
                 item.sprite.bg_color,
             );
         }
-        for entity in self.entities.iter() {
+        for entity in self.level.entities.iter() {
             self.terminal.put_ext(
                 entity.x,
                 entity.y,
@@ -106,19 +85,25 @@ impl State for GameState {
         Ok(())
     }
 
-    fn update(&mut self, ctx: &mut Context) -> tetra::Result {
+    fn update(&mut self, _ctx: &mut Context) -> tetra::Result {
         // Need to be clarified (event management)
         if !self.player_turn {
             // NPC turn
-            for entity in self.entities.iter_mut() {
+            for entity in self.level.entities.iter_mut() {
                 if entity.nature != EntityType::Hero {
                     brain(entity);
                 }
             }
 
             // Resolve actions for all entities
-            for entity in self.entities.iter_mut() {
-                action_manager(entity,&mut self.items, &mut self.play_log,  &mut self.level_map, WIDTH - UI_WIDTH, HEIGHT);
+            for entity in self.level.entities.iter_mut() {
+                action_manager(
+                    entity,
+                    &mut self.level.items,
+                    &mut self.play_log,
+                    &mut self.level.level_map,
+                    self.level.width,
+                    self.level.height);
             }
             self.player_turn = true;
             self.turn_count += 1;
@@ -134,23 +119,23 @@ impl State for GameState {
                 if self.player_turn {
                     match key {
                         Key::Up => {
-                            self.entities[0].action = Action::Move(0, -1);
+                            self.level.entities[0].action = Action::Move(0, -1);
                             self.player_turn = false;
                         }
                         Key::Down => {
-                            self.entities[0].action = Action::Move(0, 1);
+                            self.level.entities[0].action = Action::Move(0, 1);
                             self.player_turn = false;
                         }
                         Key::Left => {
-                            self.entities[0].action = Action::Move(-1, 0);
+                            self.level.entities[0].action = Action::Move(-1, 0);
                             self.player_turn = false
                         }
                         Key::Right => {
-                            self.entities[0].action = Action::Move(1, 0);
+                            self.level.entities[0].action = Action::Move(1, 0);
                             self.player_turn = false
                         }
                         Key::P => {
-                            self.entities[0].action = Action::Pick;
+                            self.level.entities[0].action = Action::Pick;
                             self.player_turn = false
                         }
                         _ => {}

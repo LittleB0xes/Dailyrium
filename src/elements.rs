@@ -46,7 +46,6 @@ impl Element {
 			ElementType::Floor 	=> element.to_floor(),
 			ElementType::Wall 	=> element.to_wall(),
 			ElementType::Gold	=> element.to_gold(),
-			_ => element.to_floor(),
 			
 		}
 
