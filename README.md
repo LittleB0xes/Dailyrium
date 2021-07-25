@@ -3,7 +3,7 @@ Dailyrium is a new attempt to make a roguelike with Rust. At the beginning, I de
 
 So I moved to Tetra game engine...
 
-A *blog* of my advancement is viewable [here](https://github.com/LittleB0xes/Dailyrium/Unexpected_Journey/README.md)
+A *blog* of my advancement is viewable [here](https://github.com/LittleB0xes/Dailyrium/tree/main/Unexpected_Journey/README.md)
 
 
 
