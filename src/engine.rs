@@ -38,7 +38,6 @@ pub fn action_manager(ent: &mut LivingEntity, items: &mut Vec<Element>, play_log
             let item_position = items.iter().position(|item| item.x == ent.x && item.y == ent.y);
             match item_position {
                 Some(pos) => {
-                    println!("Object at {} is {}", pos, items[pos].description);
                     play_log[0] = items[pos].description.clone(); 
                     items.remove(pos);
                 },
