@@ -37,3 +37,7 @@ Some monsters are born ... they are alcoholic zombies (random walk with in-map c
 - Now, player and living entities are not separated. The hero is treated the same as everyone else. no favoritism: everyone in the same `Vec <LivingEntity>`
 - The question of switching to a `HashMap` rather than a `Vec` may be posed.
 - Add a check propertie function for elements.
+
+## Day 5
+- Spawn some gold here
+- Move from `Vec<Property>` to `HashMap<Property, PropertyValue>. It's pretty ugly to to write but seems to be more useful and powerful

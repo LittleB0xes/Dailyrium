@@ -19,12 +19,11 @@ use elements::Element;
 use engine::{action_manager, brain};
 use living_entity::{LivingEntity, EntityType};
 use rltetra::Terminal;
-use world_factory::*;
+use world_factory::random_test_world;
 
 const HEIGHT: i32 = 50;
 const WIDTH: i32 = 80;
 const CELL_SIZE: i32 = 16;
-
 
 
 struct GameState {
@@ -47,14 +46,12 @@ impl GameState {
             let y = rng.gen_range(0..HEIGHT);
             npc.push(LivingEntity::new(x, y, EntityType::Zombie));
         }
-        let wmap = random_test_world(WIDTH, HEIGHT);
-        let witems = random_items_spawn(&wmap, WIDTH, HEIGHT);
         Ok(GameState {
             terminal: Terminal::new(ctx, WIDTH, HEIGHT, CELL_SIZE, CELL_SIZE),
             //player: LivingEntity::new(10, 10, EntityType::Hero ),
             entities: npc,
-            level_map:wmap,
-            items: witems, 
+            items: Vec::new(),
+            level_map: random_test_world(WIDTH, HEIGHT),
             player_turn: true,
             turn_count: 0,
         })
@@ -71,15 +68,6 @@ impl State for GameState {
                 element.sprite.glyph,
                 element.sprite.fg_color,
                 element.sprite.bg_color,
-            );
-        }
-        for item in self.items.iter() {
-            self.terminal.put_ext(
-                item.x,
-                item.y,
-                item.sprite.glyph,
-                item.sprite.fg_color,
-                item.sprite.bg_color,
             );
         }
         for entity in self.entities.iter() {

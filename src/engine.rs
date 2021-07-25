@@ -1,5 +1,5 @@
 use rand::prelude::*;
-use crate::dailyrium::{Action, Property};
+use crate::dailyrium::{Action, Property, PropertyValue};
 use crate::elements::Element;
 use crate::living_entity::LivingEntity;
 
@@ -27,9 +27,7 @@ pub fn action_manager(ent: &mut LivingEntity, level: &mut Vec<Element>, width: i
             let new_x = ent.x + dx;
             let new_y = ent.y + dy;
 
-
-            
-            if is_in_map(new_x, new_y, width, height) && level[((ent.x + dx) + (ent.y + dy) * width) as usize].have_property(Property::Crossable) {
+            if is_in_map(new_x, new_y, width, height) && level[((ent.x + dx) + (ent.y + dy) * width) as usize].have_property(Property::Crossable) == PropertyValue::Bool(true) {
                 ent.move_entity(dx, dy);
             }
             

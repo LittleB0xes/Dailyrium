@@ -1,6 +1,16 @@
-use crate::dailyrium::{Sprite, ElementType, Property};
+use crate::dailyrium::{Sprite, Property, PropertyValue};
 use crate::engine::give_id;
 use tetra::graphics::Color;
+
+use std::collections::HashMap;
+
+
+#[derive(Copy, Clone)]
+pub enum ElementType {
+	Floor,
+	Wall,
+	Gold,
+}
 
 pub struct Element {
 	pub id: u32,
@@ -8,7 +18,8 @@ pub struct Element {
 	pub y: i32,
 	pub sprite: Sprite,
 	pub nature: ElementType,
-	pub properties: Vec<Property>,
+	pub properties: HashMap<Property, PropertyValue>,
+	//pub properties: Vec<Property>,
 }
 
 impl Element {
@@ -24,12 +35,15 @@ impl Element {
 			y,
 			sprite: g,
 			nature: t,
-			properties: Vec::new(),
+			properties: HashMap::new(),
 		};
 
 		match t {
 			ElementType::Floor 	=> element.to_floor(),
 			ElementType::Wall 	=> element.to_wall(),
+			ElementType::Gold	=> element.to_gold(),
+			_ => element.to_floor(),
+			
 		}
 
 		element
@@ -38,8 +52,8 @@ impl Element {
 	fn to_floor(&mut self) {
 		self.sprite.glyph = '.' as u16;
 		self.sprite.fg_color = Color::rgba8(125, 100, 125, 255);
-		self.properties.push(Property::Crossable);
-		self.properties.push(Property::SeeThrought);
+		self.properties.insert(Property::Crossable, PropertyValue::Bool(true));
+		self.properties.insert(Property::SeeThrought, PropertyValue::Bool(true));
 	}
 	fn to_wall(&mut self) {
 		self.sprite.glyph = '#' as u16;
@@ -47,8 +61,23 @@ impl Element {
 		self.sprite.bg_color = Color::rgba8(125, 100, 125, 255);
 	}
 
-	pub fn have_property(&self, property: Property) -> bool {
-		self.properties.iter().any(|&c| c == property)
+	fn to_gold(&mut self) {
+		self.sprite.glyph = '$' as u16;
+		self.sprite.fg_color = Color::rgba8(235, 230, 25, 255);
+		self.sprite.bg_color = Color::rgba8(0,0,0, 255);
+	}
+
+	pub fn have_property(&self, property: Property) -> PropertyValue {
+		//self.properties.iter().any(|&c| c == property)
+		match self.properties.get(&property) {
+			Some(&property) => property,
+
+			_ => PropertyValue::Bool(false)
+
+		}
+
 	}
 }
+
+
 

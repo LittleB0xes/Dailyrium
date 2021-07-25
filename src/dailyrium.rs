@@ -1,16 +1,6 @@
 use tetra::graphics::Color;
 
-#[derive(Copy, Clone)]
-pub enum ElementType {
-	Floor,
-	Wall,
-}
 
-#[derive(Eq, PartialEq)]
-pub enum EntityType {
-	Hero,
-	Zombie,
-}
 
 pub enum Action {
     Move(i32, i32),
@@ -23,8 +13,15 @@ pub struct Sprite {
 	pub bg_color: Color
 }
 
-#[derive(Eq, PartialEq, Copy, Debug, Clone)]
+#[derive(Eq,PartialEq, Hash, Copy, Debug, Clone)]
 pub enum Property {
 	Crossable,
-	SeeThrought
+	SeeThrought,
+}
+
+
+#[derive(Eq,PartialEq, Hash, Copy, Debug, Clone)]
+pub enum PropertyValue {
+	Bool(bool),
+	Int(i32),
 }

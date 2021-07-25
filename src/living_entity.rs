@@ -1,6 +1,12 @@
 use tetra::graphics::Color;
-use crate::dailyrium::{Sprite, Action, EntityType};
+use crate::dailyrium::{Sprite, Action};
 use crate::engine::give_id;
+
+#[derive(Eq, PartialEq)]
+pub enum EntityType {
+	Hero,
+	Zombie,
+}
 
 pub struct LivingEntity {
     pub id: u32,
