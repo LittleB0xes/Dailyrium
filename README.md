@@ -5,15 +5,5 @@ So I moved to Tetra game engine...
 
 A *blog* of my advancement is viewable [here](https://github.com/LittleB0xes/Dailyrium/tree/main/Unexpected_Journey/README.md)
 
-
-
-# WIP but not RIP
-
-# Outer Brain Todo List
-Add Level struct
-
-## UI
-- [ ] Set UI view (map, log, stat)
-- [ ] 
-## Basic Functionnality
-- [ ] Camera system for big map
+**Warning**
+This code is perhaps, certainly, mostly awfull for a real Rustecean, but I am still in the learning phase (for a looooong time, obviously)...
