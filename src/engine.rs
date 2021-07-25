@@ -21,7 +21,7 @@ fn is_in_map(x: i32, y: i32, w: i32, h: i32) -> bool {
     }
 }
 
-pub fn action_manager(ent: &mut LivingEntity, level: &mut Vec<Element>, width: i32, height: i32) -> bool{
+pub fn action_manager(ent: &mut LivingEntity, items: &mut Vec<Element>, play_log: &mut Vec<String>,level: &mut Vec<Element>, width: i32, height: i32) -> bool{
     match ent.action {
         Action::Move(dx, dy) => {
             let new_x = ent.x + dx;
@@ -33,6 +33,22 @@ pub fn action_manager(ent: &mut LivingEntity, level: &mut Vec<Element>, width: i
             
             ent.action = Action::Waiting;
             true
+        },
+        Action::Pick => {
+            let item_position = items.iter().position(|item| item.x == ent.x && item.y == ent.y);
+            match item_position {
+                Some(pos) => {
+                    println!("Object at {} is {}", pos, items[pos].description);
+                    play_log[0] = items[pos].description.clone(); 
+                    items.remove(pos);
+                },
+                None => {
+                    println!("Nothing to pick up !");
+                }
+
+            }
+            true
+
         }
         _ => {false}
     }

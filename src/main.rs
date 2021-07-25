@@ -32,6 +32,7 @@ struct GameState {
     entities: Vec<LivingEntity>,
     items: Vec<Element>,
     level_map: Vec<Element>,
+    play_log: Vec<String>,
     player_turn: bool,
     turn_count: u32,
 }
@@ -49,12 +50,16 @@ impl GameState {
         }
         let wmap = random_test_world(WIDTH, HEIGHT);
         let witems = random_items_spawn(&wmap, WIDTH, HEIGHT);
+        let mut log = Vec::new();
+        log.push("Welcome in Dailyrium !".to_string());
         Ok(GameState {
             terminal: Terminal::new(ctx, WIDTH, HEIGHT, CELL_SIZE, CELL_SIZE),
             //player: LivingEntity::new(10, 10, EntityType::Hero ),
             entities: npc,
             level_map:wmap,
-            items: witems, 
+            items: witems,
+
+            play_log: log,
             player_turn: true,
             turn_count: 0,
         })
@@ -92,8 +97,8 @@ impl State for GameState {
             );
         }
 
-        self.terminal
-            .print(0, 0, format!("Turn: {}", self.turn_count));
+        self.terminal.print(0, 0, format!("Turn: {}", self.turn_count));
+        self.terminal.print(20, 0, format!("{}", self.play_log[0]));
         self.terminal.refresh(ctx);
         Ok(())
     }
@@ -110,7 +115,7 @@ impl State for GameState {
 
             // Resolve actions for all entities
             for entity in self.entities.iter_mut() {
-                action_manager(entity, &mut self.level_map, WIDTH, HEIGHT);
+                action_manager(entity,&mut self.items, &mut self.play_log,  &mut self.level_map, WIDTH, HEIGHT);
             }
             self.player_turn = true;
             self.turn_count += 1;
@@ -139,6 +144,10 @@ impl State for GameState {
                         }
                         Key::Right => {
                             self.entities[0].action = Action::Move(1, 0);
+                            self.player_turn = false
+                        }
+                        Key::P => {
+                            self.entities[0].action = Action::Pick;
                             self.player_turn = false
                         }
                         _ => {}

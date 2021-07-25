@@ -41,3 +41,13 @@ Some monsters are born ... they are alcoholic zombies (random walk with in-map c
 ## Day 5
 - Spawn some gold here
 - Move from `Vec<Property>` to `HashMap<Property, PropertyValue>. It's pretty ugly to to write but seems to be more useful and powerful
+- Pick (object) function... but no impact with inventory
+
+
+# Outer Brain Todo List
+
+## UI
+- [ ] Set UI view (map, log, stat)
+- [ ] 
+## Basic Functionnality
+- [ ] Camera system for big map

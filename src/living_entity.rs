@@ -1,6 +1,7 @@
 use tetra::graphics::Color;
 use crate::dailyrium::{Sprite, Action};
 use crate::engine::give_id;
+use crate::elements::Element;
 
 #[derive(Eq, PartialEq)]
 pub enum EntityType {
@@ -15,6 +16,7 @@ pub struct LivingEntity {
     pub sprite: Sprite,
     pub action: Action,
     pub nature: EntityType,
+    pub inventory: Vec<Element>,
 }
 
 impl LivingEntity {
@@ -32,6 +34,7 @@ impl LivingEntity {
             sprite,
             action: Action::Waiting,
             nature: EntityType::Hero,
+            inventory: Vec::new(),
         };
 
         match t {
@@ -59,5 +62,9 @@ impl LivingEntity {
     pub fn move_entity(&mut self, dx: i32, dy: i32) {
         self.x += dx;
         self.y += dy;
+    }
+
+    pub fn take_item(&mut self, item: Element) {
+        self.inventory.push(item);
     }
 }

@@ -19,6 +19,8 @@ pub struct Element {
 	pub sprite: Sprite,
 	pub nature: ElementType,
 	pub properties: HashMap<Property, PropertyValue>,
+	pub name: String,
+	pub description: String,
 	//pub properties: Vec<Property>,
 }
 
@@ -36,6 +38,8 @@ impl Element {
 			sprite: g,
 			nature: t,
 			properties: HashMap::new(),
+			name: "".to_string(),
+			description: "".to_string(),
 		};
 
 		match t {
@@ -65,6 +69,7 @@ impl Element {
 		self.sprite.glyph = '$' as u16;
 		self.sprite.fg_color = Color::rgba8(235, 230, 25, 255);
 		self.sprite.bg_color = Color::rgba8(0,0,0, 255);
+		self.description = "some gold".to_string();
 	}
 
 	pub fn have_property(&self, property: Property) -> PropertyValue {

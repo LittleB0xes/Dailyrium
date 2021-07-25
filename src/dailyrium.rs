@@ -5,6 +5,7 @@ use tetra::graphics::Color;
 pub enum Action {
     Move(i32, i32),
     Waiting,
+	Pick,
 }
 
 pub struct Sprite {
