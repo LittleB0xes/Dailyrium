@@ -1,7 +1,7 @@
 use rand::prelude::*;
 use crate::dailyrium::{Action, Property, PropertyValue};
 use crate::elements::Element;
-use crate::living_entity::LivingEntity;
+use crate::living_entities::LivingEntity;
 
 
 pub fn give_id() -> u32 {

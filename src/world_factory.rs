@@ -1,9 +1,9 @@
 use rand::prelude::*;
 use crate::dailyrium::{Property, PropertyValue};
 use crate::elements::Element;
-use crate::elements::items::create_gold;
-use crate::elements::buildings::{create_floor, create_wall};
-use crate::living_entity::{LivingEntity, EntityType};
+use crate::elements::items;
+use crate::elements::buildings;
+use crate::living_entities::{LivingEntity, EntityType};
 
 
 pub struct Level {
@@ -38,10 +38,10 @@ pub fn random_test_world(w: i32, h: i32) -> Vec<Element> {
 	for i in 0..(w*h) {
 		let alea = rng.gen_range(0..100);
 		if alea < 10 {
-			wmap.push(create_wall( i % w, i / w));
+			wmap.push(buildings::create_wall( i % w, i / w));
 		}
 		else {
-			wmap.push(create_floor( i % w, i / w));
+			wmap.push(buildings::create_floor( i % w, i / w));
 		}
 
 
@@ -60,7 +60,7 @@ pub fn random_items_spawn(wmap: &Vec<Element>, width: i32, height: i32) -> Vec<E
 		let y = rng.gen_range(0..height);
 		let amount = rng.gen_range(0..100);
 		if wmap[(x + y * width) as usize].have_property(Property::Crossable) == PropertyValue::Bool(true) {
-			items.push(create_gold(x, y, amount));
+			items.push(items::create_gold(x, y, amount));
 		}
 	}
 	items

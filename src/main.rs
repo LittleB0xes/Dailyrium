@@ -6,13 +6,13 @@ use tetra::{Context, ContextBuilder, Event, State};
 mod dailyrium;
 mod elements;
 mod engine;
-mod living_entity;
+mod living_entities;
 mod rl_tetra;
 mod world_factory;
 
 use dailyrium::Action;
 use engine::{action_manager, brain};
-use living_entity::EntityType;
+use living_entities::EntityType;
 use rl_tetra::Terminal;
 
 use world_factory::Level;

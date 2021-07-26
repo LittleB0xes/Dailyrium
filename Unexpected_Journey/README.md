@@ -44,3 +44,6 @@ Some monsters are born ... they are alcoholic zombies (random walk with in-map c
 - Pick (object) function... but, yet, no impact with inventory
 - Refactoring with a `Level` struct, that embeds all level data. (why not a `Vec<Level>` later ?)
 - Big cleanup : 21 warnings erased
+
+## Day 6
+A little module refactoring for the future... To let the game growing without constraint, and less friction

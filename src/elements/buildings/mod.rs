@@ -1,4 +1,4 @@
-use crate::elements::{Element, ElementType};
+use super::{Element, ElementType};
 use crate::dailyrium::{Property, PropertyValue};
 use tetra::graphics::Color;
 
