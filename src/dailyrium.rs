@@ -18,10 +18,12 @@ pub struct Sprite {
 pub enum Property {
 	Crossable,
 	SeeThrought,
+	Amount,
 }
 
 
 #[derive(Eq,PartialEq, Hash, Copy, Debug, Clone)]
 pub enum PropertyValue {
 	Bool(bool),
+	Int(i32),
 }

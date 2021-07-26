@@ -4,6 +4,8 @@ use tetra::graphics::Color;
 
 use std::collections::HashMap;
 
+pub mod items;
+
 
 #[derive(Copy, Clone)]
 pub enum ElementType {
@@ -45,8 +47,7 @@ impl Element {
 		match t {
 			ElementType::Floor 	=> element.to_floor(),
 			ElementType::Wall 	=> element.to_wall(),
-			ElementType::Gold	=> element.to_gold(),
-			
+			_ => {}	
 		}
 
 		element
@@ -64,12 +65,6 @@ impl Element {
 		self.sprite.bg_color = Color::rgba8(125, 100, 125, 255);
 	}
 
-	fn to_gold(&mut self) {
-		self.sprite.glyph = '$' as u16;
-		self.sprite.fg_color = Color::rgba8(235, 230, 25, 255);
-		self.sprite.bg_color = Color::rgba8(0,0,0, 255);
-		self.description = "some gold".to_string();
-	}
 
 	pub fn have_property(&self, property: Property) -> PropertyValue {
 		//self.properties.iter().any(|&c| c == property)

@@ -1,6 +1,7 @@
 use rand::prelude::*;
 use crate::dailyrium::{Property, PropertyValue};
 use crate::elements::{Element, ElementType};
+use crate::elements::items::create_gold;
 use crate::living_entity::{LivingEntity, EntityType};
 
 
@@ -58,8 +59,9 @@ pub fn random_items_spawn(wmap: &Vec<Element>, width: i32, height: i32) -> Vec<E
 	for _i in 0..max_of_items {
 		let x = rng.gen_range(0..width);
 		let y = rng.gen_range(0..height);
+		let amount = rng.gen_range(0..100);
 		if wmap[(x + y * width) as usize].have_property(Property::Crossable) == PropertyValue::Bool(true) {
-			items.push(Element::new(x, y, ElementType::Gold));
+			items.push(create_gold(x, y, amount));
 		}
 	}
 	items

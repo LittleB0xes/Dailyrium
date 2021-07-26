@@ -7,13 +7,13 @@ mod dailyrium;
 mod elements;
 mod engine;
 mod living_entity;
-mod rltetra;
+mod rl_tetra;
 mod world_factory;
 
 use dailyrium::Action;
 use engine::{action_manager, brain};
 use living_entity::EntityType;
-use rltetra::Terminal;
+use rl_tetra::Terminal;
 
 use world_factory::Level;
 
