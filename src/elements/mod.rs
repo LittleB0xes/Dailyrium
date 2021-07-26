@@ -5,6 +5,7 @@ use tetra::graphics::Color;
 use std::collections::HashMap;
 
 pub mod items;
+pub mod buildings;
 
 
 #[derive(Copy, Clone)]
@@ -23,7 +24,6 @@ pub struct Element {
 	pub properties: HashMap<Property, PropertyValue>,
 	pub name: String,
 	pub description: String,
-	//pub properties: Vec<Property>,
 }
 
 impl Element {
@@ -33,7 +33,7 @@ impl Element {
 			fg_color: Color::rgba8(255,255,255, 255),
 			bg_color: Color::rgba8(0,0,0, 255),
 		};
-		let mut element = Element{
+		let element = Element{
 			id: give_id(),
 			x,
 			y,
@@ -44,26 +44,9 @@ impl Element {
 			description: "".to_string(),
 		};
 
-		match t {
-			ElementType::Floor 	=> element.to_floor(),
-			ElementType::Wall 	=> element.to_wall(),
-			_ => {}	
-		}
-
 		element
 	}
 
-	fn to_floor(&mut self) {
-		self.sprite.glyph = '.' as u16;
-		self.sprite.fg_color = Color::rgba8(125, 100, 125, 255);
-		self.properties.insert(Property::Crossable, PropertyValue::Bool(true));
-		self.properties.insert(Property::SeeThrought, PropertyValue::Bool(true));
-	}
-	fn to_wall(&mut self) {
-		self.sprite.glyph = '#' as u16;
-		self.sprite.fg_color = Color::rgba8(25, 10, 25, 255);
-		self.sprite.bg_color = Color::rgba8(125, 100, 125, 255);
-	}
 
 
 	pub fn have_property(&self, property: Property) -> PropertyValue {

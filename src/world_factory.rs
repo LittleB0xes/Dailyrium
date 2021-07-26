@@ -1,7 +1,8 @@
 use rand::prelude::*;
 use crate::dailyrium::{Property, PropertyValue};
-use crate::elements::{Element, ElementType};
+use crate::elements::Element;
 use crate::elements::items::create_gold;
+use crate::elements::buildings::{create_floor, create_wall};
 use crate::living_entity::{LivingEntity, EntityType};
 
 
@@ -36,15 +37,13 @@ pub fn random_test_world(w: i32, h: i32) -> Vec<Element> {
 	let mut wmap: Vec<Element> = Vec::new();
 	for i in 0..(w*h) {
 		let alea = rng.gen_range(0..100);
-		let element: ElementType;
 		if alea < 10 {
-			element = ElementType::Wall;
+			wmap.push(create_wall( i % w, i / w));
 		}
 		else {
-			element = ElementType::Floor;
+			wmap.push(create_floor( i % w, i / w));
 		}
 
-		wmap.push(Element::new( i % w, i / w, element));
 
 	}
 
