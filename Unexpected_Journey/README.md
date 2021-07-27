@@ -47,3 +47,9 @@ Some monsters are born ... they are alcoholic zombies (random walk with in-map c
 
 ## Day 6
 A little module refactoring for the future... To let the game growing without constraint, and less friction
+
+## Day 7
+- Some project structure change... psychological instability.
+- Create a `puppet_master` function for living entities management.
+- Improve the move action management. Now, entity can't go on cell that is non crossable **AND** when the cell is occupied by another entity.
+

@@ -1,7 +1,9 @@
+use std::collections::HashMap;
+
 use rand::prelude::*;
 use crate::dailyrium::{Action, Property, PropertyValue};
-use crate::elements::Element;
-use crate::living_entities::LivingEntity;
+use crate::living_entities::Behavior;
+use crate::world_factory::Level;
 
 
 pub fn give_id() -> u32 {
@@ -21,44 +23,69 @@ fn is_in_map(x: i32, y: i32, w: i32, h: i32) -> bool {
     }
 }
 
-pub fn action_manager(ent: &mut LivingEntity, items: &mut Vec<Element>, play_log: &mut Vec<String>,level: &mut Vec<Element>, width: i32, height: i32) -> bool{
-    match ent.action {
-        Action::Move(dx, dy) => {
-            let new_x = ent.x + dx;
-            let new_y = ent.y + dy;
+pub fn puppet_master(level: &mut Level, play_log: &mut Vec<String>) {
 
-            if is_in_map(new_x, new_y, width, height) && level[((ent.x + dx) + (ent.y + dy) * width) as usize].have_property(Property::Crossable) == PropertyValue::Bool(true) {
-                ent.move_entity(dx, dy);
-            }
-            
-            ent.action = Action::Waiting;
-            true
-        },
-        Action::Pick => {
-            let item_position = items.iter().position(|item| item.x == ent.x && item.y == ent.y);
-            match item_position {
-                Some(pos) => {
-                    play_log[0] = items[pos].description.clone(); 
-                    items.remove(pos);
-                },
-                None => {
-                    println!("Nothing to pick up !");
-                }
+    let mut occupied_cell: HashMap<u32, (i32, i32)> = HashMap::new();
 
-            }
-            true
+    // Behavior resolution
+    for entity in level.entities.iter_mut() {
+        match entity.behavior {
+            Behavior::Drunk => {
+                entity.action = drunk_walking(); 
+            },
+            Behavior::Sleep => {},
 
         }
-        _ => {false}
+
+        occupied_cell.insert(entity.id, (entity.x, entity.y));
+    }
+
+    // Action resolution
+    for entity in level.entities.iter_mut() {
+        match entity.action {
+            Action::Move(dx, dy) => {
+                let new_x = entity.x + dx;
+                let new_y = entity.y + dy;
+
+                if is_in_map(new_x, new_y, level.width, level.height) && level.level_map[((entity.x + dx) + (entity.y + dy) * level.width) as usize].have_property(Property::Crossable) == PropertyValue::Bool(true) {
+                    // if crossable, we need to check if cell is occupied by another living entity
+                    let not_allowed = occupied_cell.iter().any(|cell|  cell.1.0 == new_x && cell.1.1 == new_y);  // Erk !! It's ugly
+                    if !not_allowed {
+                        entity.move_entity(dx, dy);
+                        
+                        // Occupied cell hashmap updating with the new position
+                        occupied_cell.insert(entity.id, (new_x, new_y));
+                    }
+                }
+                
+                entity.action = Action::Waiting;
+            },
+            Action::Pick => {
+                let item_position = level.items.iter().position(|item| item.x == entity.x && item.y == entity.y);
+                match item_position {
+                    Some(pos) => {
+                        play_log[0] = level.items[pos].description.clone(); 
+                        level.items.remove(pos);
+                    },
+                    None => {
+                        play_log[0] = "Nothing to pick up !".to_string(); 
+                    }
+                }
+            }
+            _ => {}
+        }
     }
 }
 
-pub fn brain(ent: &mut LivingEntity) {
+fn drunk_walking() -> Action {
     let mut rng = rand::thread_rng();
     let dx = rng.gen_range(-1..2);
     let dy = rng.gen_range(-1..2);
-    ent.action = Action::Move(dx, dy);
+    Action::Move(dx, dy)
 }
+
+
+
 
 // Simple raycasting fov with range view
 //pub fn fov(

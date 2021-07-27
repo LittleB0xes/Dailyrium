@@ -9,14 +9,20 @@ pub enum EntityType {
 	Zombie,
 }
 
+pub enum Behavior {
+    Drunk,
+    Sleep,
+}
+
 pub struct LivingEntity {
     pub id: u32,
     pub x: i32,
     pub y: i32,
     pub sprite: Sprite,
-    pub action: Action,
     pub nature: EntityType,
     pub inventory: Vec<Element>,
+    pub behavior: Behavior,
+    pub action: Action,
 }
 
 impl LivingEntity {
@@ -32,6 +38,7 @@ impl LivingEntity {
             x,
             y,
             sprite,
+            behavior: Behavior::Sleep,
             action: Action::Waiting,
             nature: EntityType::Hero,
             inventory: Vec::new(),

@@ -3,7 +3,7 @@ use crate::dailyrium::{Property, PropertyValue};
 use crate::elements::Element;
 use crate::elements::items;
 use crate::elements::buildings;
-use crate::living_entities::{LivingEntity, EntityType};
+use crate::living_entities::{LivingEntity, EntityType, Behavior};
 
 
 pub struct Level {
@@ -72,7 +72,15 @@ pub fn random_monsters_spawn(_wmap: &Vec<Element>, width: i32, height: i32) -> V
 	for _i in 0..10 {
 		let x = rng.gen_range(0..width );
 		let y = rng.gen_range(0..height);
-		npc.push(LivingEntity::new(x, y, EntityType::Zombie));
+		let state = rng.gen_range(0..100);
+		let mut monster = LivingEntity::new(x, y, EntityType::Zombie);
+		if state > 20 {
+			monster.behavior = Behavior::Drunk;
+		}
+		else {
+			monster.behavior = Behavior::Sleep;
+		}
+		npc.push(monster);
 	}
 
 	npc
