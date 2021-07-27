@@ -1,3 +1,5 @@
+use core::ops::Mul;
+
 use tetra::input::Key;
 use tetra::Event::KeyPressed;
 //use tetra::math::Vec2;
@@ -49,31 +51,52 @@ impl State for GameState {
     fn draw(&mut self, ctx: &mut Context) -> tetra::Result {
         self.terminal.clear(ctx);
         for element in self.level.level_map.iter() {
-            self.terminal.put_ext(
-                element.x,
-                element.y,
-                element.sprite.glyph,
-                element.sprite.fg_color,
-                element.sprite.bg_color,
-            );
+            if element.seen {
+                self.terminal.put_ext(
+                    element.x,
+                    element.y,
+                    element.sprite.glyph,
+                    element.sprite.fg_color,
+                    element.sprite.bg_color,
+                );
+
+            } else if element.visited {
+                self.terminal.put_ext(
+                    element.x,
+                    element.y,
+                    element.sprite.glyph,
+                    element.sprite.fg_color.mul(0.5),
+                    element.sprite.bg_color.mul(0.5),
+                );
+
+            }
         }
-        for item in self.level.items.iter() {
-            self.terminal.put_ext(
-                item.x,
-                item.y,
-                item.sprite.glyph,
-                item.sprite.fg_color,
-                item.sprite.bg_color,
-            );
-        }
-        for entity in self.level.entities.iter() {
-            self.terminal.put_ext(
-                entity.x,
-                entity.y,
-                entity.sprite.glyph,
-                entity.sprite.fg_color,
-                entity.sprite.bg_color,
-            );
+
+        // Need to be improved... Perhaps i will put it in the engine puppet master function
+        for seen in self.level.in_fov.iter() {
+            for item in self.level.items.iter() {
+                if item.x == seen.0 && item.y == seen.1 {
+                    self.terminal.put_ext(
+                        item.x,
+                        item.y,
+                        item.sprite.glyph,
+                        item.sprite.fg_color,
+                        item.sprite.bg_color,
+                    );
+                }
+            }
+            for entity in self.level.entities.iter() {
+                if entity.x == seen.0 && entity.y == seen.1 {
+                    self.terminal.put_ext(
+                        entity.x,
+                        entity.y,
+                        entity.sprite.glyph,
+                        entity.sprite.fg_color,
+                        entity.sprite.bg_color,
+                    );
+                }
+            }
+
         }
 
         self.terminal.print(UI_XOFFSET, 0, format!("Turn: {}", self.turn_count));

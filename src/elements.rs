@@ -15,6 +15,7 @@ pub enum ElementType {
 	Gold,
 }
 
+#[derive(Clone)]
 pub struct Element {
 	pub id: u32,
 	pub x: i32,
@@ -24,6 +25,12 @@ pub struct Element {
 	pub properties: HashMap<Property, PropertyValue>,
 	pub name: String,
 	pub description: String,
+
+	// Some over used properties
+	pub visited: bool,
+	pub seen: bool,
+	pub crossable: bool,
+	pub see_through: bool,
 }
 
 impl Element {
@@ -42,6 +49,11 @@ impl Element {
 			properties: HashMap::new(),
 			name: "".to_string(),
 			description: "".to_string(),
+
+			visited: false,
+			seen: false,
+			crossable: true,
+			see_through: true,
 		};
 
 		element
@@ -57,7 +69,6 @@ impl Element {
 			_ => PropertyValue::Bool(false)
 
 		}
-
 	}
 }
 

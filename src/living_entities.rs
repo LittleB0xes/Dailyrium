@@ -3,17 +3,20 @@ use crate::dailyrium::{Sprite, Action};
 use crate::engine::give_id;
 use crate::elements::Element;
 
-#[derive(Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum EntityType {
 	Hero,
 	Zombie,
 }
 
+#[derive(Copy, Clone)]
 pub enum Behavior {
     Drunk,
     Sleep,
+    PlayerControl
 }
 
+#[derive(Clone)]
 pub struct LivingEntity {
     pub id: u32,
     pub x: i32,
@@ -23,6 +26,9 @@ pub struct LivingEntity {
     pub inventory: Vec<Element>,
     pub behavior: Behavior,
     pub action: Action,
+    pub view_range: u8,
+
+    pub seen: bool,
 }
 
 impl LivingEntity {
@@ -42,6 +48,8 @@ impl LivingEntity {
             action: Action::Waiting,
             nature: EntityType::Hero,
             inventory: Vec::new(),
+            view_range: 6,
+            seen: false,
         };
 
         match t {
@@ -57,6 +65,7 @@ impl LivingEntity {
     fn breed_a_hero(&mut self) {
         self.sprite.glyph = '@' as u16;
         self.nature = EntityType::Hero;
+        self.behavior = Behavior::PlayerControl
 
     }
     fn breed_a_zombie(&mut self) {

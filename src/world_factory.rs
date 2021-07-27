@@ -11,7 +11,8 @@ pub struct Level {
 	pub height: i32,
 	pub level_map: Vec<Element>,
 	pub entities: Vec<LivingEntity>,
-	pub items: Vec<Element>
+	pub items: Vec<Element>, 
+	pub in_fov: Vec<(i32, i32)>
 }
 
 impl Level {
@@ -27,7 +28,8 @@ impl Level {
 			height: h,
 			level_map: wmap,
 			entities: npc,
-			items: items_list,		
+			items: items_list,
+			in_fov: Vec::new()	
 		}
 	}
 }
