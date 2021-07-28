@@ -3,7 +3,7 @@ use std::f32::consts::PI;
 
 use rand::prelude::*;
 use crate::dailyrium::Action;
-use crate::living_entities::Behavior;
+use crate::living_entities::{Behavior, EntityType};
 use crate::world_factory::Level;
 use crate::elements::Element;
 
@@ -36,8 +36,8 @@ pub fn puppet_master(level: &mut Level, play_log: &mut Vec<String>) {
     //let player = level.entities[0].clone();        
 
     //... So just take the useful values
-    let mut player_x = level.entities[0].x;
-    let mut player_y = level.entities[0].y;
+    let player_x = level.entities[0].x;
+    let player_y = level.entities[0].y;
 
 
     // Behavior resolution
@@ -94,13 +94,22 @@ pub fn puppet_master(level: &mut Level, play_log: &mut Vec<String>) {
             }
             _ => {}
         }
+        // Fov calculation only for the Hero
+        if entity.nature == EntityType::Hero {
+            level.in_fov = fov_raycast(entity.x, entity.y, entity.view_range as i32, &mut level.level_map, level.width, level.height);
+        }
+
+        // Check if the entity is in player (id entities[0]) FOV
+        if level.in_fov.iter().any(|cell| cell.0 == entity.x && cell.1 == entity.y) {
+            entity.seen = true;
+        } else {
+            entity.seen = false;
+        }
+
+    
     }
 
-    // Update player's value before fov calculation
-    player_x = level.entities[0].x;
-    player_y = level.entities[0].y;
-    let view_range = level.entities[0].view_range as i32;
-    level.in_fov = fov_raycast(player_x, player_y, view_range, &mut level.level_map, level.width, level.height);
+
     
 }
 

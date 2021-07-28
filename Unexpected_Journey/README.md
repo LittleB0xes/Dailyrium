@@ -54,3 +54,6 @@ A little module refactoring for the future... To let the game growing without co
 - Improve the move action management. Now, entity can't go on cell that is non crossable **AND** when the cell is occupied by another entity.
 - Create a FOV. but i think it needs to be improved... Perhaps i will put it in the engine puppet master function (and add an seen property for living entity). Actually it's in main. At least, i can improve it with `any()` iterartor.
 
+## Day 8
+- Some optimization with `puppet_master` function, to avoid multiple iteration over `entities` Vec
+- Fix turn 0 bug (black view)

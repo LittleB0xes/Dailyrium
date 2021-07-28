@@ -41,7 +41,7 @@ impl GameState {
             terminal: Terminal::new(ctx, WIDTH, HEIGHT, CELL_SIZE, CELL_SIZE),
             level: Level::new(WIDTH - UI_WIDTH, HEIGHT),
             play_log: log,
-            player_turn: true,
+            player_turn: false,
             turn_count: 0,
         })
     }
@@ -85,16 +85,17 @@ impl State for GameState {
                     );
                 }
             }
-            for entity in self.level.entities.iter() {
-                if entity.x == seen.0 && entity.y == seen.1 {
-                    self.terminal.put_ext(
-                        entity.x,
-                        entity.y,
-                        entity.sprite.glyph,
-                        entity.sprite.fg_color,
-                        entity.sprite.bg_color,
-                    );
-                }
+        }
+
+        for entity in self.level.entities.iter() {
+            if entity.seen {
+                self.terminal.put_ext(
+                    entity.x,
+                    entity.y,
+                    entity.sprite.glyph,
+                    entity.sprite.fg_color,
+                    entity.sprite.bg_color,
+                );
             }
 
         }
