@@ -57,3 +57,19 @@ A little module refactoring for the future... To let the game growing without co
 ## Day 8
 - Some optimization with `puppet_master` function, to avoid multiple iteration over `entities` Vec
 - Fix turn 0 bug (black view)
+
+Big question. My first approach, that consist to have one unique element struct and hold several specific properties in a hashmap seems to be a little source of headache for me...
+I need to take another way...
+
+I try to use a classical `HashMap<Property, i32>` and I will translate this i32 value in various ways (depends of use case).
+Or a multipurpose integer data.
+
+- Add basical inventory...
+
+Too many question about structure this days, but nothing concrete...
+
+# Day 9
+I decided to keep a very simple and multipurpose technic : an classical `u64` data variable(like a bit field). The use depends of the item.
+No progress today... just questions, always questions...
+
+- Add `Item` struct (to differentiate with `Element`)

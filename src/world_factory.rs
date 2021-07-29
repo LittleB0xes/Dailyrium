@@ -1,8 +1,8 @@
 use rand::prelude::*;
-use crate::dailyrium::{Property, PropertyValue};
 use crate::elements::Element;
+use crate::elements::items::Item;
 use crate::elements::items;
-use crate::elements::buildings;
+use crate::elements::buildings::*;
 use crate::living_entities::{LivingEntity, EntityType, Behavior};
 
 
@@ -11,7 +11,7 @@ pub struct Level {
 	pub height: i32,
 	pub level_map: Vec<Element>,
 	pub entities: Vec<LivingEntity>,
-	pub items: Vec<Element>, 
+	pub items: Vec<Item>, 
 	pub in_fov: Vec<(i32, i32)>
 }
 
@@ -40,10 +40,10 @@ pub fn random_test_world(w: i32, h: i32) -> Vec<Element> {
 	for i in 0..(w*h) {
 		let alea = rng.gen_range(0..100);
 		if alea < 10 {
-			wmap.push(buildings::create_wall( i % w, i / w));
+			wmap.push(create_wall( i % w, i / w));
 		}
 		else {
-			wmap.push(buildings::create_floor( i % w, i / w));
+			wmap.push(create_floor( i % w, i / w));
 		}
 
 
@@ -52,17 +52,18 @@ pub fn random_test_world(w: i32, h: i32) -> Vec<Element> {
 	wmap
 }
 
-pub fn random_items_spawn(wmap: &Vec<Element>, width: i32, height: i32) -> Vec<Element> {
+pub fn random_items_spawn(wmap: &Vec<Element>, width: i32, height: i32) -> Vec<Item> {
 	let mut rng = rand::thread_rng();
-	let mut items: Vec<Element> = Vec::new();
+	let mut items: Vec<Item> = Vec::new();
 	let max_of_items = 20;
 
 	for _i in 0..max_of_items {
 		let x = rng.gen_range(0..width);
 		let y = rng.gen_range(0..height);
 		let amount = rng.gen_range(0..100);
-		if wmap[(x + y * width) as usize].have_property(Property::Crossable) == PropertyValue::Bool(true) {
-			items.push(items::create_gold(x, y, amount));
+		if wmap[(x + y * width) as usize].crossable {
+			let  gold = items::create_gold(x, y, amount);
+			items.push(gold);
 		}
 	}
 	items

@@ -84,8 +84,12 @@ pub fn puppet_master(level: &mut Level, play_log: &mut Vec<String>) {
                 let item_position = level.items.iter().position(|item| item.x == entity.x && item.y == entity.y);
                 match item_position {
                     Some(pos) => {
+                        // Message in log
                         play_log[0] = level.items[pos].description.clone(); 
-                        level.items.remove(pos);
+                        let pick_ok = entity.add_to_inventory(level.items[pos].clone());
+                        if pick_ok {
+                            level.items.remove(pos);
+                        }
                     },
                     None => {
                         play_log[0] = "Nothing to pick up !".to_string(); 

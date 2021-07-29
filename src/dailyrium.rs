@@ -14,18 +14,3 @@ pub struct Sprite {
 	pub fg_color: Color,
 	pub bg_color: Color
 }
-
-
-#[derive(Eq,PartialEq, Hash, Copy, Debug, Clone)]
-pub enum Property {
-	Crossable,
-	SeeThrought,
-	Amount,
-}
-
-
-#[derive(Eq,PartialEq, Hash, Copy, Debug, Clone)]
-pub enum PropertyValue {
-	Bool(bool),
-	Int(i32),
-}

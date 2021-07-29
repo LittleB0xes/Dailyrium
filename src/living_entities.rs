@@ -1,7 +1,8 @@
 use tetra::graphics::Color;
 use crate::dailyrium::{Sprite, Action};
 use crate::engine::give_id;
-use crate::elements::Element;
+use crate::elements::{Element, ElementType};
+use crate::elements::items::{Item, ItemType};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum EntityType {
@@ -23,9 +24,12 @@ pub struct LivingEntity {
     pub y: i32,
     pub sprite: Sprite,
     pub nature: EntityType,
-    pub inventory: Vec<Element>,
+    pub inventory: Vec<Item>,
     pub behavior: Behavior,
     pub action: Action,
+
+    // Entity stat
+    pub stealth: u8,
     pub view_range: u8,
 
     pub seen: bool,
@@ -48,6 +52,7 @@ impl LivingEntity {
             action: Action::Waiting,
             nature: EntityType::Hero,
             inventory: Vec::new(),
+            stealth: 6,
             view_range: 6,
             seen: false,
         };
@@ -79,8 +84,28 @@ impl LivingEntity {
         self.x += dx;
         self.y += dy;
     }
-
-    pub fn _take_item(&mut self, item: Element) {
-        self.inventory.push(item);
+    
+    pub fn add_to_inventory(&mut self, item: Item) -> bool {
+        match item.nature {
+            ItemType::Gold => {
+                let gold_pos = self.inventory.iter().position(|it| it.nature == ItemType::Gold);
+                match gold_pos {
+                    Some(pos) => {
+                        let old_gold: u64 = self.inventory[pos].data;
+                        let new_gold: u64 = item.data;
+                        self.inventory[pos].data =  old_gold + new_gold;
+                    },
+                    None => {
+                        self.inventory.push(item);
+                    }
+                } 
+            },
+            _ => {
+                self.inventory.push(item);
+            }
+            
+        }
+        
+        true
     }
 }

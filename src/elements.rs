@@ -1,18 +1,14 @@
-use crate::dailyrium::{Sprite, Property, PropertyValue};
+use crate::dailyrium::Sprite;
 use crate::engine::give_id;
 use tetra::graphics::Color;
-
-use std::collections::HashMap;
 
 pub mod items;
 pub mod buildings;
 
-
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub enum ElementType {
 	Floor,
 	Wall,
-	Gold,
 }
 
 #[derive(Clone)]
@@ -22,7 +18,6 @@ pub struct Element {
 	pub y: i32,
 	pub sprite: Sprite,
 	pub nature: ElementType,
-	pub properties: HashMap<Property, PropertyValue>,
 	pub name: String,
 	pub description: String,
 
@@ -31,6 +26,9 @@ pub struct Element {
 	pub seen: bool,
 	pub crossable: bool,
 	pub see_through: bool,
+
+	pub data: u64,
+
 }
 
 impl Element {
@@ -46,7 +44,6 @@ impl Element {
 			y,
 			sprite: g,
 			nature: t,
-			properties: HashMap::new(),
 			name: "".to_string(),
 			description: "".to_string(),
 
@@ -54,22 +51,28 @@ impl Element {
 			seen: false,
 			crossable: true,
 			see_through: true,
+
+			data: 0,
 		};
 
 		element
 	}
+	//fn get_flag(f: u8, flag: Flags) -> bool {
+	//	let val = f & (1 << flag as u8);
+	//	match val >> flag as u8 {
+	//		1 => true,
+	//		_ => false,
+	//	}
+	//}
 
+	//fn set_flag(f: u8, flag: Flags) -> u8 {
+	//	f | (1 << flag as u8)
+	//}
 
+	//fn clear_flag(f: u8, flag: Flags) -> u8 {
+	//	f & !(1 << flag as u8)
+	//}
 
-	pub fn have_property(&self, property: Property) -> PropertyValue {
-		//self.properties.iter().any(|&c| c == property)
-		match self.properties.get(&property) {
-			Some(&property) => property,
-
-			_ => PropertyValue::Bool(false)
-
-		}
-	}
 }
 
 

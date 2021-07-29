@@ -1,15 +1,12 @@
 use super::{Element, ElementType};
-use crate::dailyrium::{Property, PropertyValue};
 use tetra::graphics::Color;
+
 
 
 pub fn create_floor(x: i32, y: i32) -> Element {
 	let mut floor = Element::new(x, y, ElementType::Floor);
 	floor.sprite.glyph = '.' as u16;
 	floor.sprite.fg_color = Color::rgba8(125, 100, 125, 255);
-	floor.properties.insert(Property::Crossable, PropertyValue::Bool(true));
-	floor.properties.insert(Property::SeeThrought, PropertyValue::Bool(true));
-
 	floor
 }
 pub fn create_wall(x: i32, y: i32) -> Element {

@@ -15,7 +15,8 @@ mod world_factory;
 use dailyrium::Action;
 use engine::puppet_master;
 use rl_tetra::Terminal;
-
+//use elements::ElementTrait;
+//use elements::floor::Floor;
 use world_factory::Level;
 
 const HEIGHT: i32 = 50;
@@ -31,11 +32,14 @@ struct GameState {
     play_log: Vec<String>,
     player_turn: bool,
     turn_count: u32,
+    //l: Vec<Box<dyn ElementTrait>>
 }
 
 impl GameState {
     fn new(ctx: &mut Context) -> tetra::Result<GameState> {
         let mut log = Vec::new();
+        //let mut l_test = Vec::new();
+        //l_test.push(Floor::new(1,2));
         log.push("Welcome to Dailyrium !".to_string());
         Ok(GameState {
             terminal: Terminal::new(ctx, WIDTH, HEIGHT, CELL_SIZE, CELL_SIZE),
@@ -43,6 +47,7 @@ impl GameState {
             play_log: log,
             player_turn: false,
             turn_count: 0,
+            //l: l_test
         })
     }
 }
@@ -103,6 +108,20 @@ impl State for GameState {
         self.terminal.print(UI_XOFFSET, 0, format!("Turn: {}", self.turn_count));
         self.terminal.print(UI_XOFFSET, 1, format!("FPS: {}", time::get_fps(ctx) as i32));
         self.terminal.print(WIDTH - UI_WIDTH, HEIGHT - 3, format!("{}", self.play_log[0]));
+
+        self.terminal.print(UI_XOFFSET, 3, format!("Stealth: {}", self.level.entities[0].stealth));
+
+
+        self.terminal.print(UI_XOFFSET, 20, "- Inventory -".to_string());
+        if self.level.entities[0].inventory.len() == 0 {
+            self.terminal.print(UI_XOFFSET, 22, "Your pockets".to_string());
+            self.terminal.print(UI_XOFFSET, 23, "   are empty...".to_string());
+        }
+        for (index, item) in self.level.entities[0].inventory.iter().enumerate() {
+            self.terminal.print(UI_XOFFSET, 21 + index as i32, format!("{}", item.name));
+
+        }
+
         self.terminal.refresh(ctx);
         Ok(())
     }
