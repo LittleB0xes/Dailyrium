@@ -1,4 +1,3 @@
-use core::ops::Mul;
 
 use tetra::input::Key;
 use tetra::Event::KeyPressed;

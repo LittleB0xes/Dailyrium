@@ -1,7 +1,6 @@
 use tetra::graphics::Color;
 use crate::dailyrium::{Sprite, Action};
 use crate::engine::give_id;
-use crate::elements::{Element, ElementType};
 use crate::elements::items::{Item, ItemType};
 
 #[derive(Copy, Clone, Eq, PartialEq)]
@@ -100,10 +99,6 @@ impl LivingEntity {
                     }
                 } 
             },
-            _ => {
-                self.inventory.push(item);
-            }
-            
         }
         
         true

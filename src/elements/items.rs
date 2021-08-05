@@ -1,12 +1,10 @@
 use crate::dailyrium::Sprite;
-use crate::elements::{Element, ElementType};
-use crate::living_entities::LivingEntity;
 use crate::engine::give_id;
 use tetra::graphics::Color;
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ItemType {
-	None,
+	//None,
 	Gold,
 }
 
