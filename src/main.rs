@@ -2,8 +2,8 @@ use core::ops::Mul;
 
 use tetra::input::Key;
 use tetra::Event::KeyPressed;
-//use tetra::math::Vec2;
 use tetra::{time, Context, ContextBuilder, Event, State};
+use tetra::graphics::Color;
 
 mod dailyrium;
 mod elements;
@@ -15,8 +15,6 @@ mod world_factory;
 use dailyrium::Action;
 use engine::puppet_master;
 use rl_tetra::Terminal;
-//use elements::ElementTrait;
-//use elements::floor::Floor;
 use world_factory::Level;
 
 const HEIGHT: i32 = 50;
@@ -30,24 +28,22 @@ struct GameState {
     terminal: Terminal,
     level: Level,
     play_log: Vec<String>,
+    interactive_panel: bool,
     player_turn: bool,
     turn_count: u32,
-    //l: Vec<Box<dyn ElementTrait>>
 }
 
 impl GameState {
     fn new(ctx: &mut Context) -> tetra::Result<GameState> {
         let mut log = Vec::new();
-        //let mut l_test = Vec::new();
-        //l_test.push(Floor::new(1,2));
         log.push("Welcome to Dailyrium !".to_string());
         Ok(GameState {
             terminal: Terminal::new(ctx, WIDTH, HEIGHT, CELL_SIZE, CELL_SIZE),
             level: Level::new(WIDTH - UI_WIDTH, HEIGHT),
             play_log: log,
+            interactive_panel: false,
             player_turn: false,
             turn_count: 0,
-            //l: l_test
         })
     }
 }
@@ -55,8 +51,10 @@ impl GameState {
 impl State for GameState {
     fn draw(&mut self, ctx: &mut Context) -> tetra::Result {
         self.terminal.clear(ctx);
-        for element in self.level.level_map.iter() {
+        for element in self.level.level_map.iter_mut() {
             if element.seen {
+                element.sprite.fg_color.a = 1.0;
+                element.sprite.bg_color.a = 1.0;
                 self.terminal.put_ext(
                     element.x,
                     element.y,
@@ -66,12 +64,18 @@ impl State for GameState {
                 );
 
             } else if element.visited {
+                element.sprite.fg_color.a -= 0.02;
+                element.sprite.bg_color.a -= 0.02;
+
+                if element.sprite.fg_color.a < 0.05 {
+                    element.visited = false;
+                }
                 self.terminal.put_ext(
                     element.x,
                     element.y,
                     element.sprite.glyph,
-                    element.sprite.fg_color.mul(0.5),
-                    element.sprite.bg_color.mul(0.5),
+                    element.sprite.fg_color,
+                    element.sprite.bg_color,
                 );
 
             }
@@ -122,13 +126,30 @@ impl State for GameState {
 
         }
 
+
+        // UI display
+        if self.interactive_panel {
+            self.terminal.bg_color(Color::rgb8(200,0,100));
+            self.terminal.print(40, 22, "                    ".to_string());
+            self.terminal.print(40, 23, "                    ".to_string());
+            self.terminal.print(40, 24, "  Interactive Panel ".to_string());
+            self.terminal.print(40, 25, "                    ".to_string());
+            self.terminal.print(40, 26, "                    ".to_string());
+            self.terminal.bg_color(Color::rgba8(0,0,0, 255));
+        }
+
+
+
         self.terminal.refresh(ctx);
         Ok(())
     }
 
     fn update(&mut self, _ctx: &mut Context) -> tetra::Result {
         // Need to be clarified (event management)
-        if !self.player_turn {
+        if self.interactive_panel {
+
+        }
+        else if !self.player_turn {
             puppet_master(&mut self.level, &mut self.play_log);
             self.player_turn = true;
             self.turn_count += 1;
@@ -141,7 +162,16 @@ impl State for GameState {
         //println!("Event: {:?}", event);
         match event {
             KeyPressed { key } => {
-                if self.player_turn {
+                if self.interactive_panel && self.player_turn {
+                    match key {
+                        Key::Space => {
+                            self.interactive_panel = false;
+                        },
+                        _ => {},
+                    }
+
+                }
+                else if self.player_turn {
                     match key {
                         Key::Up => {
                             self.level.entities[0].action = Action::Move(0, -1);
@@ -162,6 +192,9 @@ impl State for GameState {
                         Key::P => {
                             self.level.entities[0].action = Action::Pick;
                             self.player_turn = false
+                        }
+                        Key::I => {
+                            self.interactive_panel = true;
                         }
                         _ => {}
                     }
