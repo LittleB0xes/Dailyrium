@@ -69,13 +69,14 @@ impl LivingEntity {
     fn breed_a_hero(&mut self) {
         self.sprite.glyph = '@' as u16;
         self.nature = EntityType::Hero;
-        self.behavior = Behavior::PlayerControl
+        self.behavior = Behavior::PlayerControl;
+        self.view_range = 8;
 
     }
     fn breed_a_zombie(&mut self) {
         self.sprite.glyph = 'Z' as u16;
-        self.sprite.fg_color = Color::rgb8(0,0,255);
-        self.sprite.bg_color = Color::rgb8(0,0,0);
+        self.sprite.fg_color = Color::rgba8(0,0,255, 0);
+        self.sprite.bg_color = Color::rgba8(0,0,0, 0);
         self.nature = EntityType::Zombie;
     }
 

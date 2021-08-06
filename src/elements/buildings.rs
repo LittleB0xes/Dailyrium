@@ -6,7 +6,7 @@ use tetra::graphics::Color;
 pub fn create_floor(x: i32, y: i32) -> Element {
 	let mut floor = Element::new(x, y, ElementType::Floor);
 	floor.sprite.glyph = '.' as u16;
-	floor.sprite.fg_color = Color::rgba8(125, 100, 125, 0);
+	floor.sprite.fg_color = Color::rgba8(125, 100, 125,0);
 	floor
 }
 pub fn create_wall(x: i32, y: i32) -> Element {
