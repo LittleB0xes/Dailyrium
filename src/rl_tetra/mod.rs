@@ -30,7 +30,7 @@ impl Terminal {
         let ts: Texture;
         match cell_w {
             24 => ts = Texture::new(ctx, "./tilesets/24x24.png").unwrap(),
-            16 => ts = Texture::new(ctx, "./tilesets/16x16.png").unwrap(),
+            16 => ts = Texture::new(ctx, "./tilesets/16x16_rounded.png").unwrap(),
             8 => ts = Texture::new(ctx, "./tilesets/8x8.png").unwrap(),
             _ => ts = Texture::new(ctx, "./tilesets/24x24.png").unwrap(),
         }

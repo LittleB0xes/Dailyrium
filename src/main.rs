@@ -1,7 +1,6 @@
 
-use tetra::input::Key;
-use tetra::Event::KeyPressed;
-use tetra::{time, Context, ContextBuilder, Event, State};
+use tetra::input::{self, Key};
+use tetra::{time, Context, ContextBuilder, State};
 use tetra::graphics::Color;
 
 mod dailyrium;
@@ -52,8 +51,17 @@ impl State for GameState {
         self.terminal.clear(ctx);
         for element in self.level.level_map.iter_mut() {
             if element.seen {
-                element.sprite.fg_color.a = 1.0;
-                element.sprite.bg_color.a = 1.0;
+
+                // fade in effect
+                if element.sprite.fg_color.a < 1.0 {
+                    element.sprite.fg_color.a += 0.05;
+                    element.sprite.bg_color.a += 0.05;
+
+                }
+                else {
+                    element.sprite.fg_color.a = 1.0;
+                    element.sprite.bg_color.a = 1.0;
+                }
                 self.terminal.put_ext(
                     element.x,
                     element.y,
@@ -63,8 +71,16 @@ impl State for GameState {
                 );
 
             } else if element.visited {
-                element.sprite.fg_color.a -= 0.02;
-                element.sprite.bg_color.a -= 0.02;
+
+                // fade out effect
+                if element.sprite.fg_color.a > 0.4 {
+                    element.sprite.fg_color.a -= 0.02;
+                    element.sprite.bg_color.a -= 0.02;
+                } else if !self.player_turn {
+                    element.sprite.fg_color.a -= 0.05;
+                    element.sprite.bg_color.a -= 0.05;
+
+                }
 
                 if element.sprite.fg_color.a < 0.05 {
                     element.visited = false;
@@ -95,8 +111,17 @@ impl State for GameState {
             }
         }
 
-        for entity in self.level.entities.iter() {
+        for entity in self.level.entities.iter_mut() {
             if entity.seen {
+                if entity.sprite.fg_color.a < 1.0 {
+                    entity.sprite.fg_color.a += 0.05;
+                    entity.sprite.bg_color.a += 0.05;
+
+                }
+                else {
+                    entity.sprite.fg_color.a = 1.0;
+                    entity.sprite.bg_color.a = 1.0;
+                }
                 self.terminal.put_ext(
                     entity.x,
                     entity.y,
@@ -104,6 +129,23 @@ impl State for GameState {
                     entity.sprite.fg_color,
                     entity.sprite.bg_color,
                 );
+            }
+            else {
+                if entity.sprite.fg_color.a > 0.0 {
+                    entity.sprite.fg_color.a -= 0.05;
+                    entity.sprite.bg_color.a -= 0.05;
+                    self.terminal.put_ext(
+                        entity.x,
+                        entity.y,
+                        entity.sprite.glyph,
+                        entity.sprite.fg_color,
+                        entity.sprite.bg_color,
+                    );
+                }
+                else {
+                    entity.sprite.fg_color.a = 0.0; 
+                    entity.sprite.bg_color.a = 0.0; 
+                }
             }
 
         }
@@ -143,9 +185,41 @@ impl State for GameState {
         Ok(())
     }
 
-    fn update(&mut self, _ctx: &mut Context) -> tetra::Result {
+    fn update(&mut self, ctx: &mut Context) -> tetra::Result {
         // Need to be clarified (event management)
-        if self.interactive_panel {
+        if self.player_turn && !self.interactive_panel {
+            if input::is_key_pressed(ctx, Key::Up) {
+
+                self.level.entities[0].action = Action::Move(0, -1);
+                self.player_turn = false;
+            }
+            else if input::is_key_pressed(ctx, Key::Down) {
+                self.level.entities[0].action = Action::Move(0, 1);
+                self.player_turn = false;
+
+            }
+            else if input::is_key_pressed(ctx, Key::Left) {
+                self.level.entities[0].action = Action::Move(-1, 0);
+                self.player_turn = false;
+
+            }
+            else if input::is_key_pressed(ctx, Key::Right) {
+                self.level.entities[0].action = Action::Move(1, 0);
+                self.player_turn = false;
+
+            }
+            else if input::is_key_pressed(ctx, Key::P) {
+                self.level.entities[0].action = Action::Pick;
+                self.player_turn = false
+            }
+            else if input::is_key_pressed(ctx, Key::I) {
+                self.interactive_panel = true;
+            }
+        }
+        else if self.interactive_panel {
+            if input::is_key_pressed(ctx, Key::I) {
+                self.interactive_panel = false;
+            }
 
         }
         else if !self.player_turn {
@@ -157,53 +231,53 @@ impl State for GameState {
         Ok(())
     }
 
-    fn event(&mut self, _ctx: &mut Context, event: Event) -> tetra::Result {
-        //println!("Event: {:?}", event);
-        match event {
-            KeyPressed { key } => {
-                if self.interactive_panel && self.player_turn {
-                    match key {
-                        Key::Space => {
-                            self.interactive_panel = false;
-                        },
-                        _ => {},
-                    }
+    //fn event(&mut self, _ctx: &mut Context, event: Event) -> tetra::Result {
+    //    //println!("Event: {:?}", event);
+    //    match event {
+    //        KeyPressed { key } => {
+    //            if self.interactive_panel && self.player_turn {
+    //                match key {
+    //                    Key::Space => {
+    //                        self.interactive_panel = false;
+    //                    },
+    //                    _ => {},
+    //                }
 
-                }
-                else if self.player_turn {
-                    match key {
-                        Key::Up => {
-                            self.level.entities[0].action = Action::Move(0, -1);
-                            self.player_turn = false;
-                        }
-                        Key::Down => {
-                            self.level.entities[0].action = Action::Move(0, 1);
-                            self.player_turn = false;
-                        }
-                        Key::Left => {
-                            self.level.entities[0].action = Action::Move(-1, 0);
-                            self.player_turn = false
-                        }
-                        Key::Right => {
-                            self.level.entities[0].action = Action::Move(1, 0);
-                            self.player_turn = false
-                        }
-                        Key::P => {
-                            self.level.entities[0].action = Action::Pick;
-                            self.player_turn = false
-                        }
-                        Key::I => {
-                            self.interactive_panel = true;
-                        }
-                        _ => {}
-                    }
-                }
-            }
-            _ => {}
-        }
+    //            }
+    //            else if self.player_turn {
+    //                match key {
+    //                    Key::Up => {
+    //                        self.level.entities[0].action = Action::Move(0, -1);
+    //                        self.player_turn = false;
+    //                    }
+    //                    Key::Down => {
+    //                        self.level.entities[0].action = Action::Move(0, 1);
+    //                        self.player_turn = false;
+    //                    }
+    //                    Key::Left => {
+    //                        self.level.entities[0].action = Action::Move(-1, 0);
+    //                        self.player_turn = false
+    //                    }
+    //                    Key::Right => {
+    //                        self.level.entities[0].action = Action::Move(1, 0);
+    //                        self.player_turn = false
+    //                    }
+    //                    Key::P => {
+    //                        self.level.entities[0].action = Action::Pick;
+    //                        self.player_turn = false
+    //                    }
+    //                    Key::I => {
+    //                        self.interactive_panel = true;
+    //                    }
+    //                    _ => {}
+    //                }
+    //            }
+    //        }
+    //        _ => {}
+    //    }
 
-        Ok(())
-    }
+    //    Ok(())
+    //}
 }
 fn main() -> tetra::Result {
     ContextBuilder::new("Dailyrium", WIDTH * CELL_SIZE, HEIGHT * CELL_SIZE)

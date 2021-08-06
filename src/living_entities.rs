@@ -38,8 +38,8 @@ impl LivingEntity {
     pub fn new(x: i32, y: i32, t: EntityType) -> LivingEntity {
         let sprite = Sprite{
             glyph: '@' as u16,
-            fg_color: Color::rgba8(255,255,255,255),
-            bg_color: Color::rgba8(0,0,0,255),
+            fg_color: Color::rgba8(255,255,255,0),
+            bg_color: Color::rgba8(0,0,0,0),
         
         };
         let mut entity = LivingEntity {
