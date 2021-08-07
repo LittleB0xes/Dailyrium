@@ -38,8 +38,9 @@ impl LivingEntity {
     pub fn new(x: i32, y: i32, t: EntityType) -> LivingEntity {
         let sprite = Sprite{
             glyph: '@' as u16,
-            fg_color: Color::rgba8(255,255,255,0),
-            bg_color: Color::rgba8(0,0,0,0),
+            fg_color: Color::rgba8(255,255,255,255),
+            bg_color: Color::rgba8(0,0,0,255),
+            fade: 0.0
         
         };
         let mut entity = LivingEntity {
@@ -75,8 +76,8 @@ impl LivingEntity {
     }
     fn breed_a_zombie(&mut self) {
         self.sprite.glyph = 'Z' as u16;
-        self.sprite.fg_color = Color::rgba8(0,0,255, 0);
-        self.sprite.bg_color = Color::rgba8(0,0,0, 0);
+        self.sprite.fg_color = Color::rgba8(0,0,255, 255);
+        self.sprite.bg_color = Color::rgba8(0,0,0, 255);
         self.nature = EntityType::Zombie;
     }
 

@@ -109,8 +109,15 @@ pub fn puppet_master(level: &mut Level, play_log: &mut Vec<String>) {
         } else {
             entity.seen = false;
         }
+    }
 
-    
+    // Check if items are in player's fov
+    for item in level.items.iter_mut() {
+        if level.in_fov.iter().any(|cell| cell.0 == item.x && cell.1 == item.y) {
+            item.seen = true;
+        } else {
+            item.seen = false;
+        }
     }
 
 

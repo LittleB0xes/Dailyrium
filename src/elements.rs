@@ -35,8 +35,9 @@ impl Element {
 	pub fn new(x: i32, y: i32, t: ElementType) -> Element {
 		let g = Sprite {
 			glyph: '.' as u16,
-			fg_color: Color::rgba8(255,255,255, 0),
-			bg_color: Color::rgba8(0,0,0, 0),
+			fg_color: Color::rgba8(255,255,255, 255),
+			bg_color: Color::rgba8(0,0,0, 255),
+			fade: 0.0
 		};
 		let element = Element{
 			id: give_id(),

@@ -1,3 +1,4 @@
+use std::ops::Mul;
 
 use tetra::input::{self, Key};
 use tetra::{time, Context, ContextBuilder, State};
@@ -55,98 +56,109 @@ impl State for GameState {
             if element.seen {
 
                 // fade in effect
-                if element.sprite.fg_color.a < 1.0 {
-                    element.sprite.fg_color.a += 0.05;
-                    element.sprite.bg_color.a += 0.05;
-
+                if element.sprite.fade < 1.0 {
+                    element.sprite.fade += 0.05;
                 }
                 else {
-                    element.sprite.fg_color.a = 1.0;
-                    element.sprite.bg_color.a = 1.0;
+                    element.sprite.fade = 1.0;
                 }
                 self.terminal.put_ext(
                     element.x,
                     element.y,
                     element.sprite.glyph,
-                    element.sprite.fg_color,
-                    element.sprite.bg_color,
+                    element.sprite.fg_color.mul(element.sprite.fade),
+                    element.sprite.bg_color.mul(element.sprite.fade),
                 );
 
             } else if element.visited {
 
                 // fade out effect
-                if element.sprite.fg_color.a > 0.4 {
-                    element.sprite.fg_color.a -= 0.02;
-                    element.sprite.bg_color.a -= 0.02;
+                if element.sprite.fade > 0.6 {
+                    element.sprite.fade -= 0.02;
                 } else if !self.player_turn {
-                    element.sprite.fg_color.a -= 0.02;
-                    element.sprite.bg_color.a -= 0.02;
+                    element.sprite.fade -= 0.02;
 
                 }
 
-                if element.sprite.fg_color.a < 0.05 {
+                if element.sprite.fade < 0.0 {
                     element.visited = false;
                 }
                 self.terminal.put_ext(
                     element.x,
                     element.y,
                     element.sprite.glyph,
-                    element.sprite.fg_color,
-                    element.sprite.bg_color,
+                    element.sprite.fg_color.mul(element.sprite.fade),
+                    element.sprite.bg_color.mul(element.sprite.fade),
                 );
 
             }
         }
 
-        // Need to be improved... Perhaps i will put it in the engine puppet master function
-        for seen in self.level.in_fov.iter() {
-            for item in self.level.items.iter() {
-                if item.x == seen.0 && item.y == seen.1 {
+        for item in self.level.items.iter_mut() {
+            if item.seen {
+                // fade in effect
+                if item.sprite.fade < 1.0 {
+                    item.sprite.fade += 0.05;
+                }
+                else {
+                    item.sprite.fade = 1.0;
+                }
+                self.terminal.put_ext(
+                    item.x,
+                    item.y,
+                    item.sprite.glyph,
+                    item.sprite.fg_color,
+                    item.sprite.bg_color,
+                );
+
+            } else {
+                if item.sprite.fade > 0.0 {
+                    item.sprite.fade -= 0.05;
                     self.terminal.put_ext(
                         item.x,
                         item.y,
                         item.sprite.glyph,
-                        item.sprite.fg_color,
-                        item.sprite.bg_color,
+                        item.sprite.fg_color.mul(item.sprite.fade),
+                        item.sprite.bg_color.mul(item.sprite.fade),
                     );
                 }
+                else {
+                    item.sprite.fade = 0.0; 
+                }
+
             }
         }
 
         for entity in self.level.entities.iter_mut() {
             if entity.seen {
-                if entity.sprite.fg_color.a < 1.0 {
-                    entity.sprite.fg_color.a += 0.05;
-                    entity.sprite.bg_color.a += 0.05;
-
+                // fade in effect
+                if entity.sprite.fade < 1.0 {
+                    entity.sprite.fade += 0.05;
                 }
                 else {
-                    entity.sprite.fg_color.a = 1.0;
-                    entity.sprite.bg_color.a = 1.0;
+                    entity.sprite.fade = 1.0;
                 }
                 self.terminal.put_ext(
                     entity.x,
                     entity.y,
                     entity.sprite.glyph,
-                    entity.sprite.fg_color,
-                    entity.sprite.bg_color,
+                    entity.sprite.fg_color.mul(entity.sprite.fade),
+                    entity.sprite.bg_color.mul(entity.sprite.fade),
                 );
             }
             else {
-                if entity.sprite.fg_color.a > 0.0 {
-                    entity.sprite.fg_color.a -= 0.05;
-                    entity.sprite.bg_color.a -= 0.05;
+                if entity.sprite.fade > 0.0 {
+                    entity.sprite.fade -= 0.05;
                     self.terminal.put_ext(
                         entity.x,
                         entity.y,
                         entity.sprite.glyph,
-                        entity.sprite.fg_color,
-                        entity.sprite.bg_color,
+                        entity.sprite.fg_color.mul(entity.sprite.fade),
+                        entity.sprite.bg_color.mul(entity.sprite.fade),
                     );
                 }
                 else {
-                    entity.sprite.fg_color.a = 0.0; 
-                    entity.sprite.bg_color.a = 0.0; 
+                    entity.sprite.fade = 0.0; 
                 }
             }
 

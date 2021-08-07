@@ -12,5 +12,6 @@ pub enum Action {
 pub struct Sprite {
 	pub glyph: u16,
 	pub fg_color: Color,
-	pub bg_color: Color
+	pub bg_color: Color,
+	pub fade: f32
 }
