@@ -39,6 +39,8 @@ pub struct Terminal {
     cell_height: u32,
     layer_max: u32,
     current_layer: u32,
+    current_fg_color: Color,
+    current_bg_color: Color,
     layers: Vec<Layer>,
 }
 
@@ -60,6 +62,8 @@ impl Terminal {
             cell_height,
             layer_max: number_of_layer,
             current_layer: 0,
+            current_fg_color: RED,
+            current_bg_color: BLACK,
             layers: all_layers,
         }
     }
@@ -67,7 +71,31 @@ impl Terminal {
     pub fn set_layer(&mut self, layer: u32) {
         self.current_layer = layer;
     }
+    pub fn fill(&mut self, glyph: u16) {
+        self.fill_layer(self.current_layer, glyph);
+    }
+    pub fn fill_area(&mut self, glyph: u16, xo: u32, yo: u32, width: u32, height: u32) {
+        self.fill_layer_area(self.current_layer, glyph, xo, yo, width, height);
+    }
+    pub fn put_layer(&mut self, layer_index: u32, x: u32, y: u32, glyph: u16) {
+        self.put_layer_ex(layer_index, x, y, glyph, self.current_fg_color, self.current_bg_color);
+    }
+    pub fn put(&mut self, x: u32, y: u32, glyph: u16) {
+        self.put_layer_ex(self.current_layer, x, y, glyph,self.current_fg_color, self.current_bg_color);
+        
+    }
 
+    pub fn put_ex(&mut self,x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
+        self.put_layer_ex(self.current_layer, x, y, glyph, fg_color, bg_color);
+    }
+
+    pub fn put_layer_ex(&mut self,layer_index: u32, x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
+        let index = x + y * self.width;
+        self.layers[layer_index as usize].data[index as usize].glyph = glyph;
+        self.layers[layer_index as usize].data[index as usize].bg_color = bg_color;
+        self.layers[layer_index as usize].data[index as usize].fg_color = fg_color;
+    
+    }
     pub fn fill_layer(&mut self, layer_index: u32, glyph: u16) {
         for index in 0..self.width * self.height {
             self.layers[layer_index as usize].data[index as usize].glyph = glyph;
@@ -78,8 +106,7 @@ impl Terminal {
         for relative_index in 0..width * height {
             let x = xo + relative_index % width;
             let y = yo + relative_index / width;
-            let index = x + y * self.width;
-            self.layers[layer_index as usize].data[index as usize].glyph = glyph;
+            self.put_layer(layer_index, x, y, glyph);
         } 
     }
 

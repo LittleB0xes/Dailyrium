@@ -12,6 +12,8 @@ async fn main() {
     terminal.fill_layer_area(1, '@' as u16,2,2,10,10);
     terminal.fill_layer_area(1, '0' as u16,5,3,10,15);
 
+    terminal.put_ex(20, 20, 'A' as u16, BLACK, RED);
+
     loop {
         clear_background(BLACK);
         //cell.draw(texture);
