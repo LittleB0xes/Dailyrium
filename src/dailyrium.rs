@@ -68,9 +68,19 @@ impl Terminal {
         }
     }
 
-    pub fn set_layer(&mut self, layer: u32) {
+
+    pub fn layer(&mut self, layer: u32) {
         self.current_layer = layer;
     }
+
+    pub fn fg_color(&mut self, color: Color) {
+        self.current_fg_color = color;
+    }
+
+    pub fn bg_color(&mut self, color: Color) {
+        self.current_bg_color = color;
+    }
+
     pub fn fill(&mut self, glyph: u16) {
         self.fill_layer(self.current_layer, glyph);
     }
@@ -81,8 +91,7 @@ impl Terminal {
         self.put_layer_ex(layer_index, x, y, glyph, self.current_fg_color, self.current_bg_color);
     }
     pub fn put(&mut self, x: u32, y: u32, glyph: u16) {
-        self.put_layer_ex(self.current_layer, x, y, glyph,self.current_fg_color, self.current_bg_color);
-        
+        self.put_layer_ex(self.current_layer, x, y, glyph,self.current_fg_color, self.current_bg_color);   
     }
 
     pub fn put_ex(&mut self,x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
