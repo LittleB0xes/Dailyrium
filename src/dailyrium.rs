@@ -25,9 +25,9 @@ impl Cell {
 }
 
 struct Layer {
-    width: u32,
-    height: u32,
     data: Vec<Cell>,
+    default_bg_color: Color,
+    default_fg_color: Color,
 }
 
 
@@ -39,8 +39,6 @@ pub struct Terminal {
     cell_height: u32,
     layer_max: u32,
     current_layer: u32,
-    current_fg_color: Color,
-    current_bg_color: Color,
     layers: Vec<Layer>,
 }
 
@@ -49,9 +47,16 @@ impl Terminal {
     pub fn new(width: u32, height: u32, cell_width: u32, cell_height: u32, number_of_layer: u32) -> Terminal {
         let mut all_layers: Vec<Layer> = Vec::new();
         for layer in 0..number_of_layer {
-            let mut new_layer = Layer {width, height, data: Vec::new()};
+            let mut new_layer = Layer { data: Vec::new(), default_fg_color: WHITE, default_bg_color: BLACK};
+            new_layer.default_fg_color = WHITE;
+
+            // Set transparency for default value for upper layers
+            if layer != 0 {
+                new_layer.default_bg_color.a = 0.0;
+            }
+
             for index in 0..(width * height) {
-                let mut new_cell = Cell::new(index % width, index / width, '.' as u16);
+                let mut new_cell = Cell::new(index % width, index / width, ' ' as u16);
                 new_cell.fg_color = RED;
                 
                 // First Layer have a default background color
@@ -75,8 +80,6 @@ impl Terminal {
             cell_height,
             layer_max: number_of_layer,
             current_layer: 0,
-            current_fg_color: RED,
-            current_bg_color: BLACK,
             layers: all_layers,
         }
     }
@@ -87,11 +90,11 @@ impl Terminal {
     }
 
     pub fn fg_color(&mut self, color: Color) {
-        self.current_fg_color = color;
+        self.layers[self.current_layer as usize].default_fg_color = color;
     }
 
     pub fn bg_color(&mut self, color: Color) {
-        self.current_bg_color = color;
+        self.layers[self.current_layer as usize].default_bg_color = color;
     }
 
     pub fn fill(&mut self, glyph: u16) {
@@ -101,10 +104,12 @@ impl Terminal {
         self.fill_layer_area(self.current_layer, glyph, xo, yo, width, height);
     }
     pub fn put_layer(&mut self, layer_index: u32, x: u32, y: u32, glyph: u16) {
-        self.put_layer_ex(layer_index, x, y, glyph, self.current_fg_color, self.current_bg_color);
+        let fg_color = self.layers[self.current_layer as usize].default_fg_color;
+        let bg_color = self.layers[self.current_layer as usize].default_bg_color;
+        self.put_layer_ex(layer_index, x, y, glyph, fg_color, bg_color);
     }
     pub fn put(&mut self, x: u32, y: u32, glyph: u16) {
-        self.put_layer_ex(self.current_layer, x, y, glyph,self.current_fg_color, self.current_bg_color);   
+        self.put_layer(self.current_layer, x, y, glyph);
     }
 
     pub fn put_ex(&mut self,x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
@@ -141,6 +146,7 @@ impl Terminal {
             }
         }
     }
+
     fn draw_cell(&self, texture: Texture2D, cell: Cell) {
         let bg_draw_param = DrawTextureParams {
             dest_size: Some(Vec2::new(16.0, 16.0)),

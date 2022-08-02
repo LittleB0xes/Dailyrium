@@ -6,23 +6,25 @@ use dailyrium::{Terminal};
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut terminal = Terminal::new(48, 32, 16, 16, 3 );
+    let mut terminal = Terminal::new(48, 32, 16, 16, 2 );
     let texture = Texture2D::from_file_with_format(include_bytes!("../assets/16x16_yun.png"), None);
 
     terminal.layer(0);
+    terminal.fill('.' as u16);
     terminal.fg_color(GREEN);
     terminal.bg_color(BLUE);
-    terminal.fill_layer_area(1, '@' as u16,2,2,10,10);
+    terminal.fill_layer_area(0, '@' as u16,2,2,10,10);
 
-    terminal.fg_color(RED);
-    terminal.bg_color(YELLOW); 
+    terminal.layer(1);
+    terminal.fg_color(BEIGE);
+    terminal.bg_color(Color::new(0.0,0.0,0.0,0.0)); 
     terminal.fill_layer_area(1, '0' as u16,5,3,10,15);
 
+    terminal.layer(0);
     terminal.put_ex(20, 20, 'A' as u16, BLACK, RED);
 
     loop {
         clear_background(BLACK);
-        //cell.draw(texture);
         terminal.render(texture);
 
 
