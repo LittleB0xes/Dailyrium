@@ -3,13 +3,6 @@
 version = 3
 
 [[package]]
-name = "Dailyrium"
-version = "0.1.0"
-dependencies = [
- "macroquad",
-]
-
-[[package]]
 name = "adler32"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -88,6 +81,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b540bd8bc810d3885c6ea91e2018302f68baba2129ab3e88f32389ee9370880d"
 dependencies = [
  "cfg-if",
+]
+
+[[package]]
+name = "dailyrium"
+version = "0.1.0"
+dependencies = [
+ "macroquad",
 ]
 
 [[package]]
