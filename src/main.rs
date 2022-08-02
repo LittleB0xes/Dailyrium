@@ -9,7 +9,8 @@ async fn main() {
     let mut terminal = Terminal::new(48, 32, 16, 16, 3 );
     let texture = Texture2D::from_file_with_format(include_bytes!("../assets/16x16_yun.png"), None);
 
-    terminal.fill_layer_with(2, '/' as u16);
+    terminal.fill_layer_area(1, '@' as u16,2,2,10,10);
+    terminal.fill_layer_area(1, '0' as u16,5,3,10,15);
 
     loop {
         clear_background(BLACK);
