@@ -9,7 +9,13 @@ async fn main() {
     let mut terminal = Terminal::new(48, 32, 16, 16, 3 );
     let texture = Texture2D::from_file_with_format(include_bytes!("../assets/16x16_yun.png"), None);
 
+    terminal.layer(0);
+    terminal.fg_color(GREEN);
+    terminal.bg_color(BLUE);
     terminal.fill_layer_area(1, '@' as u16,2,2,10,10);
+
+    terminal.fg_color(RED);
+    terminal.bg_color(YELLOW); 
     terminal.fill_layer_area(1, '0' as u16,5,3,10,15);
 
     terminal.put_ex(20, 20, 'A' as u16, BLACK, RED);
@@ -36,7 +42,7 @@ fn window_conf() -> Conf {
         window_width: 1280,
         window_height: 720,
         fullscreen: false,
-        high_dpi: true,
+        //high_dpi: true,
         ..Default::default()
     }
 }
