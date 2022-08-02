@@ -1,18 +1,21 @@
 use macroquad::prelude::*;
 
 mod dailyrium;
-use dailyrium::{Terminal, Cell};
+use dailyrium::{Terminal};
 
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut terminal = Terminal::new(48, 32, 16, 16, 1 );
+    let mut terminal = Terminal::new(48, 32, 16, 16, 3 );
     let texture = Texture2D::from_file_with_format(include_bytes!("../assets/16x16_yun.png"), None);
-    let cell = Cell::new(4, 6, '.' as u16);
+
+    terminal.fill_layer_with(2, '/' as u16);
 
     loop {
         clear_background(BLACK);
-        cell.draw(texture);
+        //cell.draw(texture);
+        terminal.render(texture);
+
 
         /*
             Future "Great" Stuff here :-D
