@@ -84,38 +84,50 @@ impl Terminal {
         }
     }
 
-
+    /// Set the current active layer
     pub fn layer(&mut self, layer: u32) {
         self.current_layer = layer;
     }
 
+    /// Set the foreground color of the current layer
     pub fn fg_color(&mut self, color: Color) {
         self.layers[self.current_layer as usize].default_fg_color = color;
     }
 
+    /// Set the background color of the current layer
     pub fn bg_color(&mut self, color: Color) {
         self.layers[self.current_layer as usize].default_bg_color = color;
     }
 
+    /// Fill the current layer with a glyph (u16)
     pub fn fill(&mut self, glyph: u16) {
         self.fill_layer(self.current_layer, glyph);
     }
+
+    /// Fill an area of the current layer with a glyph
+    /// Warning : out of bound checking yet (comming soon)
     pub fn fill_area(&mut self, glyph: u16, xo: u32, yo: u32, width: u32, height: u32) {
         self.fill_layer_area(self.current_layer, glyph, xo, yo, width, height);
     }
+
+    /// Put a glyph in a specific place in a specific layer
     pub fn put_layer(&mut self, layer_index: u32, x: u32, y: u32, glyph: u16) {
         let fg_color = self.layers[self.current_layer as usize].default_fg_color;
         let bg_color = self.layers[self.current_layer as usize].default_bg_color;
         self.put_layer_ex(layer_index, x, y, glyph, fg_color, bg_color);
     }
+    
+    /// Put a glyph in a specific place in the current layer
     pub fn put(&mut self, x: u32, y: u32, glyph: u16) {
         self.put_layer(self.current_layer, x, y, glyph);
     }
 
+    /// Put a glyph in a specific place in the current layer, with given color
     pub fn put_ex(&mut self,x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
         self.put_layer_ex(self.current_layer, x, y, glyph, fg_color, bg_color);
     }
 
+    /// Put a glyph in a specific place in a specific layer, with given color
     pub fn put_layer_ex(&mut self,layer_index: u32, x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
         let index = x + y * self.width;
         self.layers[layer_index as usize].data[index as usize].glyph = glyph;
@@ -123,12 +135,15 @@ impl Terminal {
         self.layers[layer_index as usize].data[index as usize].fg_color = fg_color;
     
     }
+    
+    /// Fill a specific layer with a glyph
     pub fn fill_layer(&mut self, layer_index: u32, glyph: u16) {
         for index in 0..self.width * self.height {
             self.layers[layer_index as usize].data[index as usize].glyph = glyph;
         }
     }
 
+    /// Fill a specific layer area with a glyph
     pub fn fill_layer_area(&mut self,layer_index: u32, glyph: u16, xo: u32, yo: u32, width: u32, height: u32) {
         for relative_index in 0..width * height {
             let x = xo + relative_index % width;
@@ -138,6 +153,7 @@ impl Terminal {
     }
 
 
+    // All Terminal's layers rendering
     pub fn render(&self, texture: Texture2D) {
         for layer_index in 0..self.layer_max {
             for index in 0..self.width * self.height {
@@ -147,6 +163,7 @@ impl Terminal {
         }
     }
 
+    // draw a cell (foreground and background)
     fn draw_cell(&self, texture: Texture2D, cell: Cell) {
         let bg_draw_param = DrawTextureParams {
             dest_size: Some(Vec2::new(16.0, 16.0)),
