@@ -192,4 +192,10 @@ impl Terminal {
         draw_texture_ex(texture, (cell.x * 16) as f32, (cell.y * 16) as f32, cell.bg_color, bg_draw_param );
         draw_texture_ex(texture, (cell.x * 16) as f32, (cell.y * 16) as f32, cell.fg_color, draw_param );
     }
+
+    pub fn print(&mut self, x: u32, y: u32, string: String) {
+        for (i, letter) in string.chars().enumerate() {
+            self.put(x + i as u32, y, letter as u16);
+        }
+    }
 }

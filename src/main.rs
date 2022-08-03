@@ -25,6 +25,7 @@ async fn main() {
 
     loop {
         clear_background(BLACK);
+        terminal.print(0, 1, format!("FPS: {}", get_fps() as i32));
         terminal.render(texture);
 
 
