@@ -8,7 +8,7 @@ struct Manor {
 
 }
 
-enum ElementType {
+pub enum ElementType {
     Wall,
     Floor,
 }
@@ -19,19 +19,39 @@ pub struct Element {
     pub glyph: u16,
     pub x: u32,
     pub y: u32,
+    pub crossable: bool
 }
 
-//impl Element {
-//    pub fn new(x: u32, y: u32, element_type: ElementType) -> Self {
-//        Self {
-//            element_type,
-//            glyph,
-//            x,
-//            y,
-//        }
-//    }
-//}
 
+impl Element {
+    pub fn new(x: u32, y: u32, element_type: ElementType) -> Self {
+        let element: Element = match element_type {
+            ElementType::Wall => {build_wall(x, y)},
+            ElementType::Floor => {build_floor(x, y)},
+        };
+        element
+    }
+}
+
+fn build_wall(x: u32, y: u32) -> Element {
+    Element {
+        element_type: ElementType::Wall,
+        glyph: '#' as u16,
+        x,
+        y,
+        crossable: false
+    }
+}
+
+fn build_floor(x: u32, y: u32) -> Element {
+    Element {
+        element_type: ElementType::Floor,
+        glyph: '.' as u16,
+        x,
+        y,
+        crossable: true
+    }
+}
 pub struct Stage {
     stage_id: u32,
     width: u32,
@@ -51,19 +71,17 @@ impl Stage {
         let mut stage_map: Vec<Element> = Vec::new();
         for index in 0..width*height {
             let alea: u32 = rand() % 100;
-            let glyph: u16;
+            let element_type: ElementType;
             if alea < 10 {
-                glyph = '#' as u16;
+                element_type = ElementType::Wall;
             }
             else {
-                glyph = '.' as u16;
+                element_type = ElementType::Floor;
             }
-            let new_element = Element {
-                x: index % width,
-                y: index / width,
-                element_type: ElementType::Floor,
-                glyph
-            };
+            let x = index % width;
+            let y = index / width;
+            let new_element = Element::new(x, y, element_type);
+            
             stage_map.push(new_element);
 
         }
