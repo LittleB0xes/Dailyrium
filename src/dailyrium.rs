@@ -9,6 +9,7 @@ struct Cell {
     glyph: u16,
     fg_color: Color,
     bg_color: Color,
+    
 }
 
 impl Cell {
@@ -193,9 +194,17 @@ impl Terminal {
         draw_texture_ex(texture, (cell.x * 16) as f32, (cell.y * 16) as f32, cell.fg_color, draw_param );
     }
 
+    /// Print a string in position
     pub fn print(&mut self, x: u32, y: u32, string: String) {
+        let fg_color = self.layers[self.current_layer as usize].default_fg_color;
+        let bg_color = self.layers[self.current_layer as usize].default_bg_color;
+        self.print_ex(x, y, string, fg_color, bg_color)
+    }
+
+    /// Print a string in a position with given colors
+    pub fn print_ex(&mut self, x: u32, y: u32, string: String, fg_color: Color, bg_color: Color) {
         for (i, letter) in string.chars().enumerate() {
-            self.put(x + i as u32, y, letter as u16);
+            self.put_ex(x + i as u32, y, letter as u16, fg_color, bg_color);
         }
     }
 }

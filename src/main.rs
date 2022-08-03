@@ -6,7 +6,7 @@ use dailyrium::{Terminal};
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut terminal = Terminal::new(48, 32, 16, 16, 2 );
+    let mut terminal = Terminal::new(80, 45, 16, 16, 2 );
     let texture = Texture2D::from_file_with_format(include_bytes!("../assets/16x16_yun.png"), None);
 
     terminal.layer(0);
