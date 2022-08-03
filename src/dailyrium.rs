@@ -51,7 +51,7 @@ impl Terminal {
         let mut all_layers: Vec<Layer> = Vec::new();
         for layer in 0..number_of_layer {
             let mut new_layer = Layer { data: Vec::new(), default_fg_color: WHITE, default_bg_color: BLACK};
-            new_layer.default_fg_color = WHITE;
+            new_layer.default_fg_color = GRAY;
 
             // Set transparency for default value for upper layers
             if layer != 0 {
@@ -60,7 +60,7 @@ impl Terminal {
 
             for index in 0..(width * height) {
                 let mut new_cell = Cell::new(index % width, index / width, ' ' as u16);
-                new_cell.fg_color = RED;
+                new_cell.fg_color = GRAY;
                 
                 // First Layer have a default background color
                 if layer == 0 {
