@@ -6,8 +6,9 @@ use dailyrium::{Terminal};
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut terminal = Terminal::new(80, 45, 16, 16, 2 );
-    let texture = Texture2D::from_file_with_format(include_bytes!("../assets/16x16_yun.png"), None);
+    let mut terminal = Terminal::new(80, 45, 16, 16, 1, 2 );
+    let texture = Texture2D::from_file_with_format(include_bytes!("../assets/16x16_sm.png"), None);
+    texture.set_filter(FilterMode::Nearest);
 
     terminal.layer(0);
     terminal.fill('.' as u16);
@@ -25,7 +26,8 @@ async fn main() {
 
     loop {
         clear_background(BLACK);
-        terminal.print(0, 1, format!("FPS: {}", get_fps() as i32));
+        let fps = format!("FPS: {}", get_fps() as i32);
+        terminal.print(0, 1, fps);
         terminal.render(texture);
 
 
