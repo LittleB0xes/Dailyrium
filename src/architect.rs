@@ -54,8 +54,8 @@ fn build_floor(x: u32, y: u32) -> Element {
 }
 pub struct Stage {
     stage_id: u32,
-    width: u32,
-    height: u32,
+    pub width: u32,
+    pub height: u32,
     pub stage_map: Vec<Element>,
 }
 

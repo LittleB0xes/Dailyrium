@@ -20,7 +20,7 @@ async fn main() {
     let mut hero = Hero::new(10, 10);
     loop {
 
-        hero.update();
+        hero.update(&stage);
 
         for element in stage.stage_map.iter() {
             terminal.put(element.x, element.y, element.glyph)

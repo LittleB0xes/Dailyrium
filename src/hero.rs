@@ -1,8 +1,12 @@
 use macroquad::prelude::*;
 
+use crate::architect::Stage;
+
 pub struct Hero {
     pub x: u32,
     pub y: u32,
+    dir_x: i32,
+    dir_y: i32,
     pub glyph: u16,
 }
 
@@ -11,22 +15,42 @@ impl Hero {
         Self {
             x,
             y,
+            dir_x: 0,
+            dir_y: 0,
             glyph: '@' as u16,
+
+            
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, stage: &Stage) {
         if is_key_pressed(KeyCode::Left) {
-            self.x -= 1;
+            self.dir_x = -1;
         }
         else if is_key_pressed(KeyCode::Right) {
-            self.x += 1;
+            self.dir_x = 1;
         }
         else if is_key_pressed(KeyCode::Up) {
-            self.y -= 1;
+            self.dir_y = -1;
         }
         else if is_key_pressed(KeyCode::Down) {
-            self.y += 1;
+            self.dir_y = 1;
         }
+
+        let dest_x = (self.x as i32 +  self.dir_x) as u32;
+        let dest_y = (self.y as i32 +  self.dir_y) as u32;
+        if stage.stage_map[(dest_x + dest_y * stage.width) as usize].crossable {
+            self.x = dest_x;
+            self.y = dest_y;
+        }
+        else {
+            self.dir_x = 0;
+            self.dir_y = 0;
+        }
+
+
+        // Reset direction after turn
+        self.dir_x = 0;
+        self.dir_y = 0;
     }
 }
