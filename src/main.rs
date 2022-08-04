@@ -12,18 +12,18 @@ use hero::Hero;
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut terminal = Terminal::new(60, 44, 20,20, 1, 2 );
+    let mut terminal = Terminal::new(80, 45, 20,20, 1, 2 );
     let texture = Texture2D::from_file_with_format(include_bytes!("../assets/20x20_oreslam.png"), None);
     texture.set_filter(FilterMode::Nearest);
 
-    let stage = Stage::new(0,60, 34);
+    let stage = Stage::new(0,80, 45);
     let mut hero = Hero::new(10, 10);
     loop {
 
         hero.update(&stage);
 
         for element in stage.stage_map.iter() {
-            terminal.put(element.x, element.y, element.glyph)
+            terminal.put_ex(element.x, element.y, element.glyph, element.fg_color, element.bg_color);
         }
         terminal.put(hero.x, hero.y, hero.glyph);
         clear_background(BLACK);
