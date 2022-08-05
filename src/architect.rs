@@ -53,7 +53,7 @@ fn build_wall(x: u32, y: u32) -> Element {
 }
 
 fn build_floor(x: u32, y: u32) -> Element {
-    let gray_value = (100 + rand() % 50)  as f32 / 255.0;
+    let gray_value = (50 + rand() % 50)  as f32 / 255.0;
     let fg_color = Color::new(gray_value, gray_value, gray_value, 1.0);
     Element {
         element_type: ElementType::Floor,

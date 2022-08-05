@@ -8,6 +8,7 @@ pub struct Hero {
     dir_x: i32,
     dir_y: i32,
     pub glyph: u16,
+    pub fg_color: Color,
 }
 
 impl Hero {
@@ -18,7 +19,7 @@ impl Hero {
             dir_x: 0,
             dir_y: 0,
             glyph: '@' as u16,
-
+            fg_color: WHITE,
             
         }
     }
