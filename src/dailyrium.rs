@@ -39,7 +39,7 @@ pub struct Terminal {
     height: u32,
     cell_width: u32,
     cell_height: u32,
-    scale: u32,
+    scale: f32,
     layer_max: u32,
     current_layer: u32,
     layers: Vec<Layer>,
@@ -47,7 +47,7 @@ pub struct Terminal {
 
 impl Terminal {
     /// Create a new terminal with size and layers
-    pub fn new(width: u32, height: u32, cell_width: u32, cell_height: u32, scale: u32, number_of_layer: u32) -> Terminal {
+    pub fn new(width: u32, height: u32, cell_width: u32, cell_height: u32, scale: f32, number_of_layer: u32) -> Terminal {
         let mut all_layers: Vec<Layer> = Vec::new();
         for layer in 0..number_of_layer {
             let mut new_layer = Layer { data: Vec::new(), default_fg_color: WHITE, default_bg_color: BLACK};
@@ -170,7 +170,7 @@ impl Terminal {
     // draw a cell (foreground and background)
     fn draw_cell(&self, texture: Texture2D, cell: Cell) {
         let bg_draw_param = DrawTextureParams {
-            dest_size: Some(Vec2::new((self.scale * self.cell_width) as f32, (self.scale * self.cell_height) as f32)),
+            dest_size: Some(Vec2::new(self.scale * self.cell_width as f32, self.scale * self.cell_height as f32)),
             source: Some(Rect::new(
                 self.cell_width as f32 * 11.0, //11 13
                 self.cell_height as f32 * 13.0,
@@ -182,7 +182,7 @@ impl Terminal {
             pivot: None,
         };
         let draw_param = DrawTextureParams {
-            dest_size: Some(Vec2::new((self.scale * self.cell_width) as f32, (self.scale * self.cell_height) as f32)),
+            dest_size: Some(Vec2::new(self.scale * self.cell_width as f32, self.scale * self.cell_height as f32)),
             source: Some(Rect::new(
                 (self.cell_width * (cell.glyph as u32 % 16)) as f32,
                 (self.cell_height * (cell.glyph as u32 / 16)) as f32,
@@ -193,8 +193,8 @@ impl Terminal {
             flip_y: false,
             pivot: None,
         };
-        draw_texture_ex(texture, (cell.x * self.cell_width * self.scale) as f32, (cell.y * self.cell_height * self.scale) as f32, cell.bg_color, bg_draw_param );
-        draw_texture_ex(texture, (cell.x * self.cell_width * self.scale) as f32, (cell.y * self.cell_height * self.scale) as f32, cell.fg_color, draw_param );
+        draw_texture_ex(texture, (cell.x * self.cell_width) as f32 * self.scale, (cell.y * self.cell_height) as f32 * self.scale, cell.bg_color, bg_draw_param );
+        draw_texture_ex(texture, (cell.x * self.cell_width) as f32 * self.scale, (cell.y * self.cell_height) as f32 * self.scale, cell.fg_color, draw_param );
     }
 
     /// Print a string in position

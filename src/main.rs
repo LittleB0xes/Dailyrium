@@ -12,8 +12,8 @@ use hero::Hero;
 
 #[macroquad::main(window_conf)]
 async fn main() {
-    let mut terminal = Terminal::new(80, 45, 20,20, 1, 2 );
-    let texture = Texture2D::from_file_with_format(include_bytes!("../assets/20x20_oreslam.png"), None);
+    let mut terminal = Terminal::new(80, 45, 24,24, 1.0, 2 );
+    let texture = Texture2D::from_file_with_format(include_bytes!("../assets/24x24_hack.png"), None);
     texture.set_filter(FilterMode::Nearest);
 
     let stage = Stage::new(0,80, 45);
