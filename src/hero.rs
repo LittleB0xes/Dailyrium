@@ -9,6 +9,8 @@ pub struct Hero {
     dir_y: i32,
     pub glyph: u16,
     pub fg_color: Color,
+    pub turn_finish: bool,
+
 }
 
 impl Hero {
@@ -20,11 +22,13 @@ impl Hero {
             dir_y: 0,
             glyph: '@' as u16,
             fg_color: WHITE,
+            turn_finish: false,
             
         }
     }
 
-    pub fn update(&mut self, stage: &Stage) {
+    pub fn update(&mut self, stage: &Stage) -> bool {
+        let mut turn_finish = false;
         if is_key_pressed(KeyCode::Left) {
             self.dir_x = -1;
         }
@@ -40,9 +44,10 @@ impl Hero {
 
         let dest_x = (self.x as i32 +  self.dir_x) as u32;
         let dest_y = (self.y as i32 +  self.dir_y) as u32;
-        if stage.stage_map[(dest_x + dest_y * stage.width) as usize].crossable {
+        if !(self.dir_x == 0 && self.dir_y == 0) && stage.stage_map[(dest_x + dest_y * stage.width) as usize].crossable {
             self.x = dest_x;
             self.y = dest_y;
+            turn_finish = true;
         }
         else {
             self.dir_x = 0;
@@ -53,5 +58,7 @@ impl Hero {
         // Reset direction after turn
         self.dir_x = 0;
         self.dir_y = 0;
+
+        turn_finish
     }
 }

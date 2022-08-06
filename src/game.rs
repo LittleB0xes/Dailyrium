@@ -9,6 +9,8 @@ pub struct Game {
     texture: Texture2D,
     hero: Hero,
     current_stage: Stage,
+    turn: u32,
+    manor_turn: bool,
 }
 
 impl Game {
@@ -26,12 +28,22 @@ impl Game {
             texture,
             hero,
             current_stage,
+            turn: 0,
+            manor_turn: false,
         }
     }
 
     pub fn tick(&mut self) {
+        if !self.manor_turn {
+            self.manor_turn = self.hero.update(&self.current_stage);
 
-        self.hero.update(&self.current_stage);
+        }
+        else {
+            self.turn += 1;
+            println!("{} - Manor Turn !", self.turn);
+            self.manor_turn = false;
+
+        }
 
         for element in self.current_stage.stage_map.iter() {
             self.terminal.put_ex(element.x, element.y, element.glyph, element.fg_color, element.bg_color);
