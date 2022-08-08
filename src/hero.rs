@@ -4,8 +4,8 @@ use crate::architect::Stage;
 use crate::dailyrium::utils::*;
 
 pub struct Hero {
-    pub x: u32,
-    pub y: u32,
+    pub x: i32,
+    pub y: i32,
     dir_x: i32,
     dir_y: i32,
     pub glyph: u16,
@@ -14,7 +14,7 @@ pub struct Hero {
 }
 
 impl Hero {
-    pub fn new(x: u32, y: u32) -> Self {
+    pub fn new(x: i32, y: i32) -> Self {
         Self {
             x,
             y,
@@ -38,10 +38,10 @@ impl Hero {
             self.dir_y = 1;
         }
 
-        let dest_x = (self.x as i32 + self.dir_x) as u32;
-        let dest_y = (self.y as i32 + self.dir_y) as u32;
+        let dest_x = self.x  + self.dir_x;
+        let dest_y = self.y  + self.dir_y;
         if !(self.dir_x == 0 && self.dir_y == 0) && inside_rect(dest_x, dest_y, 0, 0, stage.width - 1, stage.height - 1)
-            && stage.stage_map[(dest_x + dest_y * stage.width) as usize].crossable
+            && stage.stage_map[(dest_x + dest_y * stage.width as i32 ) as usize].crossable
         {
             self.x = dest_x;
             self.y = dest_y;

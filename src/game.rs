@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 
 use crate::architect::Stage;
 use crate::dailyrium::Terminal;
+use crate::dailyrium::utils::*;
 use crate::hero::Hero;
 use crate::nursery::*;
 
@@ -38,8 +39,10 @@ impl Game {
     }
 
     pub fn tick(&mut self) {
+        let mut visible_tile: Vec<(i32, i32)> = Vec::new();
         if !self.manor_turn {
             self.manor_turn = self.hero.update(&self.current_stage);
+            visible_tile = fov_raycast(self.hero.x, self.hero.y, 10, &mut self.current_stage.stage_map, self.current_stage.width, self.current_stage.height);
         } else {
             self.turn += 1;
             for monster in self.living_entities.iter_mut() {
@@ -48,36 +51,48 @@ impl Game {
             self.manor_turn = false;
         }
 
+        // Clear all the scene
+        self.terminal.bg_color(BLACK);
+        self.terminal.fill(' ' as u16);
+        // Place display
         for element in self.current_stage.stage_map.iter() {
-            self.terminal.put_ex(
-                element.x,
-                element.y,
-                element.glyph,
-                element.fg_color,
-                element.bg_color,
-            );
+            if element.seen {
+                self.terminal.put_ex(
+                    element.x as u32,
+                    element.y as u32,
+                    element.glyph,
+                    element.fg_color,
+                    element.bg_color,
+                );
+
+            }
         }
 
         for monster in self.living_entities.iter() {
-            self.terminal.put_ex(
-                monster.x,
-                monster.y,
+            if visible_tile.contains(&(monster.x, monster.y)) {
+                self.terminal.put_ex(
+                monster.x as u32,
+                monster.y as u32,
                 monster.glyph,
                 monster.fg_color,
-                self.terminal.pick_bg(monster.x, monster.y),
+                self.terminal.pick_bg(monster.x as u32, monster.y as u32),
             );
+            }
+            
 
         }
         self.terminal.put_ex(
-            self.hero.x,
-            self.hero.y,
+            self.hero.x as u32,
+            self.hero.y as u32,
             self.hero.glyph,
             self.hero.fg_color,
-            self.terminal.pick_bg(self.hero.x, self.hero.y),
+            self.terminal.pick_bg(self.hero.x as u32, self.hero.y as u32),
         );
         clear_background(BLACK);
-        let fps = format!("Turn: {}", self.turn);
-        self.terminal.print(0, 1, fps);
+        //let fps = format!("fps: {}", get_fps() as u32);
+        //self.terminal.print(0, 0, fps);
+        let turn = format!("Turn: {}", self.turn);
+        self.terminal.print(0, 1, turn);
         self.terminal.render(self.texture);
     }
 }

@@ -14,14 +14,14 @@ struct Manor {
 
 pub struct Stage {
     stage_id: u32,
-    pub width: u32,
-    pub height: u32,
+    pub width: i32,
+    pub height: i32,
     pub stage_map: Vec<Element>,
     pub living_entities: Vec<LivingEntity>,
 }
 
 impl Stage {
-    pub fn new(stage_id: u32, width: u32, height: u32) -> Self{
+    pub fn new(stage_id: u32, width: i32, height: i32) -> Self{
         rand::srand(SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()

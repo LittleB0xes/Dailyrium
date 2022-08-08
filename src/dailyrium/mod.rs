@@ -159,8 +159,13 @@ impl Terminal {
 
     /// Fill a specific layer with a glyph
     pub fn fill_layer(&mut self, layer_index: u32, glyph: u16) {
+        let fg_color = self.layers[self.current_layer as usize].default_fg_color;
+        let bg_color = self.layers[self.current_layer as usize].default_bg_color;
         for index in 0..self.width * self.height {
             self.layers[layer_index as usize].data[index as usize].glyph = glyph;
+            self.layers[layer_index as usize].data[index as usize].fg_color = fg_color;
+            self.layers[layer_index as usize].data[index as usize].bg_color = bg_color;
+
         }
     }
 

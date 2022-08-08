@@ -17,15 +17,15 @@ pub enum EntityType {
 }
 
 pub struct LivingEntity {
-    pub x: u32,
-    pub y: u32,
+    pub x: i32,
+    pub y: i32,
     pub glyph: u16,
     pub fg_color: Color,
     pub behaviour: Behaviour
 }
 
 impl LivingEntity {
-    pub fn new(x: u32, y: u32, entity_type: EntityType) -> Self {
+    pub fn new(x: i32, y: i32, entity_type: EntityType) -> Self {
         match entity_type {
             EntityType::Zomby => create_zomby(x, y),
         }
@@ -36,22 +36,19 @@ impl LivingEntity {
             Behaviour::Drunk =>{self.move_to(drunk_walk(), stage)},
             _ => {}
         }
-
-
     }
 
     fn move_to(&mut self, direction: (i32, i32), stage: &mut Stage) {
         let dest_x = self.x as i32 + direction.0;
         let dest_y = self.y as i32 + direction.1;
-        if inside_rect(dest_x as u32, dest_y as u32, 0, 0, stage.width - 1, stage.height - 1) && stage.stage_map[(dest_x as u32 + dest_y as u32 * stage.width) as usize].crossable {
-            self.x = dest_x as u32;
-            self.y = dest_y as u32;
+        if inside_rect(dest_x, dest_y, 0, 0, stage.width - 1, stage.height - 1) && stage.stage_map[(dest_x + dest_y * stage.width) as usize].crossable {
+            self.x = dest_x;
+            self.y = dest_y;
         }
     }
-
 }
 
-fn create_zomby(x: u32, y: u32) -> LivingEntity {
+fn create_zomby(x: i32, y: i32) -> LivingEntity {
     LivingEntity {
         x,
         y,
@@ -66,8 +63,8 @@ pub fn spawn_monsters(amount: u32, stage: &Stage) -> Vec<LivingEntity> {
     let mut monster_index = 0;
     while monster_index < amount {
         let mut free_place = false;
-        let mut x_candidate: u32 = 0;
-        let mut y_candidate: u32= 0;
+        let mut x_candidate: i32 = 0;
+        let mut y_candidate: i32= 0;
         while !free_place {
             x_candidate = gen_range(0, stage.width);
             y_candidate = gen_range(0, stage.height);
