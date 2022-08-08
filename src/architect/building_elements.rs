@@ -19,7 +19,6 @@ pub struct Element {
     pub bg_color: Color,
 }
 
-
 impl Element {
     pub fn new(x: i32, y: i32, element_type: ElementType) -> Self {
         let element: Element = match element_type {
@@ -63,6 +62,5 @@ fn build_floor(x: i32, y: i32) -> Element {
         seen: false,
         visited: false,
         see_through: true,
-
     }
 }

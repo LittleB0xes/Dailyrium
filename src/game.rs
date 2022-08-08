@@ -1,7 +1,8 @@
 use macroquad::prelude::*;
+use macroquad::rand::gen_range;
 
-use crate::architect::Stage;
-use crate::dailyrium::Terminal;
+use crate::architect::{Stage, GenerationType};
+use crate::dailyrium::terminal::Terminal;
 use crate::dailyrium::utils::*;
 use crate::hero::Hero;
 use crate::nursery::*;
@@ -23,8 +24,15 @@ impl Game {
             Texture2D::from_file_with_format(include_bytes!("../assets/16x16_rounded.png"), None);
         texture.set_filter(FilterMode::Nearest);
 
-        let current_stage = Stage::new(0, 80, 45);
-        let hero = Hero::new(10, 10);
+        let current_stage = Stage::new(0, 80, 45, GenerationType::Room );
+
+        let mut x_candidate = gen_range(0, current_stage.width - 1);
+        let mut y_candidate = gen_range(0, current_stage.height - 1);
+        while !current_stage.stage_map[(x_candidate + y_candidate * current_stage.width) as usize ].crossable {
+            x_candidate = gen_range(0, current_stage.width - 1);
+            y_candidate = gen_range(0, current_stage.height - 1);
+        }
+        let hero = Hero::new(x_candidate, y_candidate);
         let living_entities = spawn_monsters(20, &current_stage);
 
         Self {
@@ -78,8 +86,6 @@ impl Game {
                 self.terminal.pick_bg(monster.x as u32, monster.y as u32),
             );
             }
-            
-
         }
         self.terminal.put_ex(
             self.hero.x as u32,
