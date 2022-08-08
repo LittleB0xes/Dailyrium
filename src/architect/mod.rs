@@ -71,9 +71,7 @@ fn random_generation(width: i32, height: i32) -> Vec<Element> {
 
 fn room_stage_generation(width: i32, height: i32) -> Vec<Element> {
 
-    let h_zone = 6;
-    let v_zone = 4;
-
+    
 
     let mut stage_map = Vec::new();
     
@@ -82,17 +80,25 @@ fn room_stage_generation(width: i32, height: i32) -> Vec<Element> {
         stage_map.push(Element::new(i as i32 % width, i as i32 / width, ElementType::Wall));
     }
 
+    //let h_zone = 20;
+    //let v_zone = 14;
+    //let room_width = || {2 + rand() % 5};
+    //let room_height = || {2 + rand() % 5};
+
+    let h_zone = 15;
+    let v_zone = 10;
+    let room_width = || {3 + rand() % 5};
+    let room_height = || {3 + rand() % 5};
     // create an empty place for each cell
     for i in 0..h_zone {
         for j in 0..v_zone {
-            let room_width = 10 + rand() % 5;
-            let room_height = 10 + rand() % 5;
+            let r_width = room_width();
+            let r_height = room_height();
             let xo = i * width / h_zone + (rand() % 5) as i32;
             let yo = j * height / v_zone + (rand() % 5) as i32;
-            for x in xo..(xo + room_width as i32) {
-                for y in yo..(yo + room_height as i32) {
+            for x in xo..(xo + r_width as i32) {
+                for y in yo..(yo + r_height as i32) {
                     if x < width && y < height {
-
                         stage_map[(x + y * width) as usize] = Element::new(x as i32, y as i32, ElementType::Floor);
                     }
                 }
@@ -100,9 +106,6 @@ fn room_stage_generation(width: i32, height: i32) -> Vec<Element> {
         }
 
     }
-
-
-    // Room constructioni here...
 
     stage_map
 
