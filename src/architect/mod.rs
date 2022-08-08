@@ -80,15 +80,24 @@ fn room_stage_generation(width: i32, height: i32) -> Vec<Element> {
         stage_map.push(Element::new(i as i32 % width, i as i32 / width, ElementType::Wall));
     }
 
+
+    // Cave
     //let h_zone = 20;
     //let v_zone = 14;
     //let room_width = || {2 + rand() % 5};
     //let room_height = || {2 + rand() % 5};
+    
+    // Large room space
+    let h_zone = 12;
+    let v_zone = 8;
+    let room_width = || {5 + rand() % 5};
+    let room_height = || {5 + rand() % 5};
 
-    let h_zone = 15;
-    let v_zone = 10;
-    let room_width = || {3 + rand() % 5};
-    let room_height = || {3 + rand() % 5};
+    // looks more like cave
+    //let h_zone = 15;
+    //let v_zone = 10;
+    //let room_width = || {3 + rand() % 5};
+    //let room_height = || {3 + rand() % 5};
     // create an empty place for each cell
     for i in 0..h_zone {
         for j in 0..v_zone {
@@ -104,9 +113,7 @@ fn room_stage_generation(width: i32, height: i32) -> Vec<Element> {
                 }
             }
         }
-
     }
 
     stage_map
-
 }
