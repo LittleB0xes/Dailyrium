@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 
 mod dailyrium;
 mod architect;
+mod nursery;
 mod hero;
 
 mod game;

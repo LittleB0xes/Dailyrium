@@ -2,7 +2,6 @@
 
 use macroquad::prelude::*;
 
-
 #[derive(Copy, Clone)]
 struct Cell {
     x: u32,
@@ -10,7 +9,6 @@ struct Cell {
     glyph: u16,
     fg_color: Color,
     bg_color: Color,
-    
 }
 
 impl Cell {
@@ -23,7 +21,6 @@ impl Cell {
             bg_color: Color::new(0.0, 0.0, 0.0, 1.0),
         }
     }
-
 }
 
 struct Layer {
@@ -31,8 +28,6 @@ struct Layer {
     default_bg_color: Color,
     default_fg_color: Color,
 }
-
-
 
 pub struct Terminal {
     width: u32,
@@ -47,10 +42,21 @@ pub struct Terminal {
 
 impl Terminal {
     /// Create a new terminal with size and layers
-    pub fn new(width: u32, height: u32, cell_width: u32, cell_height: u32, scale: f32, number_of_layer: u32) -> Terminal {
+    pub fn new(
+        width: u32,
+        height: u32,
+        cell_width: u32,
+        cell_height: u32,
+        scale: f32,
+        number_of_layer: u32,
+    ) -> Terminal {
         let mut all_layers: Vec<Layer> = Vec::new();
         for layer in 0..number_of_layer {
-            let mut new_layer = Layer { data: Vec::new(), default_fg_color: WHITE, default_bg_color: BLACK};
+            let mut new_layer = Layer {
+                data: Vec::new(),
+                default_fg_color: WHITE,
+                default_bg_color: BLACK,
+            };
             new_layer.default_fg_color = GRAY;
 
             // Set transparency for default value for upper layers
@@ -61,10 +67,9 @@ impl Terminal {
             for index in 0..(width * height) {
                 let mut new_cell = Cell::new(index % width, index / width, ' ' as u16);
                 new_cell.fg_color = GRAY;
-                
+
                 // First Layer have a default background color
                 if layer == 0 {
-
                     new_cell.bg_color = BLACK;
                 }
                 // Other Layers have transparency background by default
@@ -120,26 +125,33 @@ impl Terminal {
         let bg_color = self.layers[self.current_layer as usize].default_bg_color;
         self.put_layer_ex(layer_index, x, y, glyph, fg_color, bg_color);
     }
-    
+
     /// Put a glyph in a specific place in the current layer
     pub fn put(&mut self, x: u32, y: u32, glyph: u16) {
         self.put_layer(self.current_layer, x, y, glyph);
     }
 
     /// Put a glyph in a specific place in the current layer, with given color
-    pub fn put_ex(&mut self,x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
+    pub fn put_ex(&mut self, x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
         self.put_layer_ex(self.current_layer, x, y, glyph, fg_color, bg_color);
     }
 
     /// Put a glyph in a specific place in a specific layer, with given color
-    pub fn put_layer_ex(&mut self,layer_index: u32, x: u32, y: u32, glyph: u16, fg_color: Color, bg_color: Color) {
+    pub fn put_layer_ex(
+        &mut self,
+        layer_index: u32,
+        x: u32,
+        y: u32,
+        glyph: u16,
+        fg_color: Color,
+        bg_color: Color,
+    ) {
         let index = x + y * self.width;
         self.layers[layer_index as usize].data[index as usize].glyph = glyph;
         self.layers[layer_index as usize].data[index as usize].bg_color = bg_color;
         self.layers[layer_index as usize].data[index as usize].fg_color = fg_color;
-    
     }
-    
+
     /// Fill a specific layer with a glyph
     pub fn fill_layer(&mut self, layer_index: u32, glyph: u16) {
         for index in 0..self.width * self.height {
@@ -148,14 +160,21 @@ impl Terminal {
     }
 
     /// Fill a specific layer area with a glyph
-    pub fn fill_layer_area(&mut self,layer_index: u32, glyph: u16, xo: u32, yo: u32, width: u32, height: u32) {
+    pub fn fill_layer_area(
+        &mut self,
+        layer_index: u32,
+        glyph: u16,
+        xo: u32,
+        yo: u32,
+        width: u32,
+        height: u32,
+    ) {
         for relative_index in 0..width * height {
             let x = xo + relative_index % width;
             let y = yo + relative_index / width;
             self.put_layer(layer_index, x, y, glyph);
-        } 
+        }
     }
-
 
     // All Terminal's layers rendering
     pub fn render(&self, texture: Texture2D) {
@@ -170,31 +189,51 @@ impl Terminal {
     // draw a cell (foreground and background)
     fn draw_cell(&self, texture: Texture2D, cell: Cell) {
         let bg_draw_param = DrawTextureParams {
-            dest_size: Some(Vec2::new(self.scale * self.cell_width as f32, self.scale * self.cell_height as f32)),
+            dest_size: Some(Vec2::new(
+                self.scale * self.cell_width as f32,
+                self.scale * self.cell_height as f32,
+            )),
             source: Some(Rect::new(
                 self.cell_width as f32 * 11.0, //11 13
                 self.cell_height as f32 * 13.0,
                 self.cell_width as f32,
-                self.cell_height as f32)),
+                self.cell_height as f32,
+            )),
             rotation: 0.0,
             flip_x: false,
             flip_y: false,
             pivot: None,
         };
         let draw_param = DrawTextureParams {
-            dest_size: Some(Vec2::new(self.scale * self.cell_width as f32, self.scale * self.cell_height as f32)),
+            dest_size: Some(Vec2::new(
+                self.scale * self.cell_width as f32,
+                self.scale * self.cell_height as f32,
+            )),
             source: Some(Rect::new(
                 (self.cell_width * (cell.glyph as u32 % 16)) as f32,
                 (self.cell_height * (cell.glyph as u32 / 16)) as f32,
                 self.cell_width as f32,
-                self.cell_height as f32)),
+                self.cell_height as f32,
+            )),
             rotation: 0.0,
             flip_x: false,
             flip_y: false,
             pivot: None,
         };
-        draw_texture_ex(texture, (cell.x * self.cell_width) as f32 * self.scale, (cell.y * self.cell_height) as f32 * self.scale, cell.bg_color, bg_draw_param );
-        draw_texture_ex(texture, (cell.x * self.cell_width) as f32 * self.scale, (cell.y * self.cell_height) as f32 * self.scale, cell.fg_color, draw_param );
+        draw_texture_ex(
+            texture,
+            (cell.x * self.cell_width) as f32 * self.scale,
+            (cell.y * self.cell_height) as f32 * self.scale,
+            cell.bg_color,
+            bg_draw_param,
+        );
+        draw_texture_ex(
+            texture,
+            (cell.x * self.cell_width) as f32 * self.scale,
+            (cell.y * self.cell_height) as f32 * self.scale,
+            cell.fg_color,
+            draw_param,
+        );
     }
 
     /// Print a string in position
