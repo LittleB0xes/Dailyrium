@@ -10,6 +10,7 @@ pub struct Game {
     texture: Texture2D,
     hero: Hero,
     current_stage: Stage,
+    living_entities: Vec<LivingEntity>,
     turn: u32,
     manor_turn: bool,
 }
@@ -23,7 +24,7 @@ impl Game {
 
         let mut current_stage = Stage::new(0, 80, 45);
         let hero = Hero::new(10, 10);
-        spawn_monsters(10, &mut current_stage);
+        let living_entities = spawn_monsters(200, &current_stage);
 
         Self {
             terminal,
@@ -32,6 +33,7 @@ impl Game {
             current_stage,
             turn: 0,
             manor_turn: false,
+            living_entities,
         }
     }
 
@@ -40,6 +42,9 @@ impl Game {
             self.manor_turn = self.hero.update(&self.current_stage);
         } else {
             self.turn += 1;
+            for monster in self.living_entities.iter_mut() {
+                monster.update(&mut self.current_stage)
+            }
             self.manor_turn = false;
         }
 
@@ -53,7 +58,7 @@ impl Game {
             );
         }
 
-        for monster in self.current_stage.living_entities.iter() {
+        for monster in self.living_entities.iter() {
             self.terminal.put_ex(
                 monster.x,
                 monster.y,
