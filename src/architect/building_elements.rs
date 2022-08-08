@@ -44,6 +44,8 @@ fn build_wall_block(x: u32, y: u32) -> Element {
 fn build_floor(x: u32, y: u32) -> Element {
     let gray_value = (50 + rand() % 50)  as f32 / 255.0;
     let fg_color = Color::new(gray_value, gray_value, gray_value, 1.0);
+    let dark_gray_value =  (rand() % 25)  as f32 / 255.0;
+    let bg_color = Color::new(dark_gray_value, dark_gray_value, dark_gray_value, 1.0);
     Element {
         element_type: ElementType::Floor,
         glyph: '.' as u16,
@@ -51,7 +53,7 @@ fn build_floor(x: u32, y: u32) -> Element {
         y,
         crossable: true,
         fg_color,
-        bg_color: BLACK,
+        bg_color
 
     }
 }

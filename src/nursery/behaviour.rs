@@ -1,6 +1,5 @@
 use::macroquad::rand::rand;
 
-
 /// Move behavour : Totaly random walk
 pub fn drunk_walk() -> (i32, i32) {
     let alea = rand()%4;

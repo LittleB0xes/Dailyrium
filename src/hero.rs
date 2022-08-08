@@ -1,6 +1,7 @@
 use macroquad::prelude::*;
 
 use crate::architect::Stage;
+use crate::dailyrium::utils::*;
 
 pub struct Hero {
     pub x: u32,
@@ -39,7 +40,7 @@ impl Hero {
 
         let dest_x = (self.x as i32 + self.dir_x) as u32;
         let dest_y = (self.y as i32 + self.dir_y) as u32;
-        if !(self.dir_x == 0 && self.dir_y == 0)
+        if !(self.dir_x == 0 && self.dir_y == 0) && inside_rect(dest_x, dest_y, 0, 0, stage.width - 1, stage.height - 1)
             && stage.stage_map[(dest_x + dest_y * stage.width) as usize].crossable
         {
             self.x = dest_x;

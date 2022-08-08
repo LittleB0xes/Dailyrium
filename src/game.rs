@@ -22,9 +22,9 @@ impl Game {
             Texture2D::from_file_with_format(include_bytes!("../assets/16x16_rounded.png"), None);
         texture.set_filter(FilterMode::Nearest);
 
-        let mut current_stage = Stage::new(0, 80, 45);
+        let current_stage = Stage::new(0, 80, 45);
         let hero = Hero::new(10, 10);
-        let living_entities = spawn_monsters(200, &current_stage);
+        let living_entities = spawn_monsters(20, &current_stage);
 
         Self {
             terminal,
@@ -64,7 +64,7 @@ impl Game {
                 monster.y,
                 monster.glyph,
                 monster.fg_color,
-                BLACK,
+                self.terminal.pick_bg(monster.x, monster.y),
             );
 
         }
@@ -73,7 +73,7 @@ impl Game {
             self.hero.y,
             self.hero.glyph,
             self.hero.fg_color,
-            BLACK,
+            self.terminal.pick_bg(self.hero.x, self.hero.y),
         );
         clear_background(BLACK);
         let fps = format!("Turn: {}", self.turn);

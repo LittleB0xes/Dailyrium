@@ -2,6 +2,7 @@ use macroquad::prelude::*;
 use crate::rand::gen_range;
 
 use crate::architect::Stage;
+use crate::dailyrium::utils::inside_rect;
 
 mod behaviour;
 use behaviour::*;
@@ -79,11 +80,4 @@ pub fn spawn_monsters(amount: u32, stage: &Stage) -> Vec<LivingEntity> {
         monster_index += 1;
     }
     living_entities
-}
-
-pub fn inside_rect(x: u32, y: u32, box_x: u32, box_y: u32, box_w: u32, box_h: u32) -> bool {
-    x >= box_x
-    && x <= box_x + box_w
-    && y >=box_y
-    && y <= box_y + box_h
 }

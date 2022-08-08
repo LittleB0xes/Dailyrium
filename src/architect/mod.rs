@@ -4,7 +4,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::nursery::LivingEntity;
 
-mod building_elements;
+pub mod building_elements;
 use building_elements::*;
 
 struct Manor {

@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 
 use macroquad::prelude::*;
+pub mod utils;
 
 #[derive(Copy, Clone)]
 struct Cell {
@@ -96,6 +97,10 @@ impl Terminal {
     /// Set the current active layer
     pub fn layer(&mut self, layer: u32) {
         self.current_layer = layer;
+    }
+
+    pub fn pick_bg(&self, x: u32, y: u32) -> Color {
+        self.layers[self.current_layer as usize].data[(x + y * self.width)as usize].bg_color 
     }
 
     /// Set the foreground color of the current layer
