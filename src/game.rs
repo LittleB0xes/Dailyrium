@@ -4,6 +4,7 @@ use macroquad::rand::gen_range;
 use crate::architect::{Stage, GenerationType};
 use crate::dailyrium::terminal::Terminal;
 use crate::dailyrium::utils::*;
+use crate::dailyrium::pathfinder::path_finder;
 use crate::hero::Hero;
 use crate::nursery::*;
 
@@ -128,6 +129,17 @@ impl Game {
         let mouse_x = (mouse_position().0 / 16.0) as i32;
         let mouse_y = (mouse_position().1 / 16.0) as i32;
         let mouse = format!("Mouse: {}, {}", mouse_x, mouse_y);
+        let path = path_finder(self.hero.x, self.hero.y, mouse_x, mouse_y, &self.current_stage.stage_map, self.current_stage.width, self.current_stage.height);
+        for t in path.iter() {
+            self.terminal.put_ex(
+                t.0 as u32,
+                t.1 as u32,
+                ' ' as u16,
+                WHITE,
+                ORANGE,
+            );
+
+        }
         self.terminal.print(0, 1, mouse);
         self.terminal.render(self.texture);
     }
