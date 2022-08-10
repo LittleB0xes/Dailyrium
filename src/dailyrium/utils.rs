@@ -1,4 +1,5 @@
 use crate::architect::building_elements::Element;
+use macroquad::color::Color;
 
 use std::f32::consts::PI;
 
@@ -67,4 +68,10 @@ pub fn inside_rect(x: i32, y: i32, box_x: i32, box_y: i32, box_w: i32, box_h: i3
     && x <= box_x + box_w
     && y >=box_y
     && y <= box_y + box_h
+}
+
+
+/// Macroquad Color multiplication
+pub fn mul_color(color: Color, factor: f32) -> Color {
+    Color::new(factor * color.r, factor * color.g, factor * color.b, color.a)
 }

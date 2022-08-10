@@ -65,14 +65,30 @@ impl Game {
         // Place display
         for element in self.current_stage.stage_map.iter() {
             if element.seen {
+                let dist = (((self.hero.x - element.x).pow(2) + (self.hero.y - element.y).pow(2)) as f32).sqrt();
+                let factor = -(1.0 - 0.25) / 10.0 * dist + 1.0;
+                
+                let bg_color = mul_color(element.bg_color, factor);
+                let fg_color = mul_color(element.fg_color, factor);
                 self.terminal.put_ex(
                     element.x as u32,
                     element.y as u32,
                     element.glyph,
-                    element.fg_color,
-                    element.bg_color,
+                    fg_color,
+                    bg_color,
                 );
 
+            }
+            else if element.visited {
+                let bg_color = mul_color(element.bg_color, 0.25);
+                let fg_color = mul_color(element.fg_color, 0.25);
+                self.terminal.put_ex(
+                    element.x as u32,
+                    element.y as u32,
+                    element.glyph,
+                    fg_color,
+                    bg_color,
+                ); 
             }
         }
 
@@ -95,8 +111,8 @@ impl Game {
             self.terminal.pick_bg(self.hero.x as u32, self.hero.y as u32),
         );
         clear_background(BLACK);
-        //let fps = format!("fps: {}", get_fps() as u32);
-        //self.terminal.print(0, 0, fps);
+        let fps = format!("fps: {}", get_fps() as u32);
+        self.terminal.print(0, 0, fps);
         let turn = format!("Turn: {}", self.turn);
         self.terminal.print(0, 1, turn);
         self.terminal.render(self.texture);
