@@ -125,8 +125,10 @@ impl Game {
         clear_background(BLACK);
         let fps = format!("fps: {}", get_fps() as u32);
         //self.terminal.print(0, 0, fps);
-        let turn = format!("Turn: {}", self.turn);
-        //self.terminal.print(0, 1, turn);
+        let mouse_x = (mouse_position().0 / 16.0) as i32;
+        let mouse_y = (mouse_position().1 / 16.0) as i32;
+        let mouse = format!("Mouse: {}, {}", mouse_x, mouse_y);
+        self.terminal.print(0, 1, mouse);
         self.terminal.render(self.texture);
     }
 }
