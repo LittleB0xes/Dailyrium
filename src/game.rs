@@ -69,6 +69,9 @@ impl Game {
 
         // Clear all the scene
         self.terminal.bg_color(BLACK);
+        self.terminal.layer(1);
+        self.terminal.fill(' ' as u16);
+        self.terminal.layer(0);
         self.terminal.fill(' ' as u16);
         // Place display
         for element in self.current_stage.stage_map.iter_mut() {
@@ -130,16 +133,18 @@ impl Game {
         let mouse_y = (mouse_position().1 / 16.0) as i32;
         let mouse = format!("Mouse: {}, {}", mouse_x, mouse_y);
         let path = path_finder(self.hero.x, self.hero.y, mouse_x, mouse_y, &self.current_stage.stage_map, self.current_stage.width, self.current_stage.height);
+        self.terminal.layer(1);
         for t in path.iter() {
             self.terminal.put_ex(
                 t.0 as u32,
                 t.1 as u32,
                 ' ' as u16,
                 WHITE,
-                ORANGE,
+                Color::new(0.9, 0.8, 0.0, 0.3),
             );
 
         }
+        self.terminal.layer(0);
         self.terminal.print(0, 1, mouse);
         self.terminal.render(self.texture);
     }
