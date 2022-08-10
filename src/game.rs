@@ -56,14 +56,21 @@ impl Game {
             for monster in self.living_entities.iter_mut() {
                 monster.update(&mut self.current_stage)
             }
+
+            for element in self.current_stage.stage_map.iter_mut() {
+                if element.visited && !element.seen {
+                    element.alzheimerize();
+                }
+            }
             self.manor_turn = false;
+
         }
 
         // Clear all the scene
         self.terminal.bg_color(BLACK);
         self.terminal.fill(' ' as u16);
         // Place display
-        for element in self.current_stage.stage_map.iter() {
+        for element in self.current_stage.stage_map.iter_mut() {
             if element.seen {
                 let dist = (((self.hero.x - element.x).pow(2) + (self.hero.y - element.y).pow(2)) as f32).sqrt();
                 let factor = -(1.0 - 0.25) / 10.0 * dist + 1.0;
@@ -80,26 +87,31 @@ impl Game {
 
             }
             else if element.visited {
-                let bg_color = mul_color(element.bg_color, 0.25);
-                let fg_color = mul_color(element.fg_color, 0.25);
+                let bg_color = mul_color(element.bg_color, 0.25 * element.alois_factor);
+                let fg_color = mul_color(element.fg_color, 0.25 * element.alois_factor);
                 self.terminal.put_ex(
                     element.x as u32,
                     element.y as u32,
                     element.glyph,
                     fg_color,
                     bg_color,
-                ); 
+                );
             }
         }
 
         for monster in self.living_entities.iter() {
             if visible_tile.contains(&(monster.x, monster.y)) {
+                let dist = (((self.hero.x - monster.x).pow(2) + (self.hero.y - monster.y).pow(2)) as f32).sqrt();
+                let factor = -(1.0 - 0.25) / 10.0 * dist + 1.0;
+                
+                let bg_color = mul_color(self.terminal.pick_bg(monster.x as u32, monster.y as u32), factor);
+                let fg_color = mul_color(monster.fg_color, factor);
                 self.terminal.put_ex(
                 monster.x as u32,
                 monster.y as u32,
                 monster.glyph,
-                monster.fg_color,
-                self.terminal.pick_bg(monster.x as u32, monster.y as u32),
+                fg_color,
+                bg_color,
             );
             }
         }
@@ -112,9 +124,9 @@ impl Game {
         );
         clear_background(BLACK);
         let fps = format!("fps: {}", get_fps() as u32);
-        self.terminal.print(0, 0, fps);
+        //self.terminal.print(0, 0, fps);
         let turn = format!("Turn: {}", self.turn);
-        self.terminal.print(0, 1, turn);
+        //self.terminal.print(0, 1, turn);
         self.terminal.render(self.texture);
     }
 }

@@ -17,6 +17,7 @@ pub struct Element {
     pub see_through: bool,
     pub fg_color: Color,
     pub bg_color: Color,
+    pub alois_factor: f32,
 }
 
 impl Element {
@@ -26,6 +27,13 @@ impl Element {
             ElementType::Floor => {build_floor(x, y)},
         };
         element
+    }
+    pub fn alzheimerize(&mut self) {
+        self.alois_factor -= 0.05;
+        if self.alois_factor <= 0.0 {
+            self.alois_factor = 1.0;
+            self.visited = false;
+        }
     }
 }
 fn build_wall_block(x: i32, y: i32) -> Element {
@@ -43,6 +51,7 @@ fn build_wall_block(x: i32, y: i32) -> Element {
         seen: false,
         visited: false,
         see_through: false,
+        alois_factor: 1.0,
     }
 }
 
@@ -62,5 +71,6 @@ fn build_floor(x: i32, y: i32) -> Element {
         seen: false,
         visited: false,
         see_through: true,
+        alois_factor: 1.0,
     }
 }
