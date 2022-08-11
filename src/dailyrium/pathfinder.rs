@@ -11,7 +11,8 @@ pub fn path_finder(
     level_map: &Vec<Element>,
     w: i32,
     h: i32,
-) -> Vec<(i32,i32)> {
+) -> Option<Vec<(i32,i32)>> {
+
     #[derive(Copy, Clone, Eq, PartialEq)]
     struct Node {
         id: i32,
@@ -157,6 +158,13 @@ pub fn path_finder(
                 }
             }
         }
+
+        path.reverse();
+        Some(path)
+
+    }
+    else {
+        None
     }
     //if closed_list.len() != 0 {
     //    for e in closed_list.iter() {
@@ -164,7 +172,6 @@ pub fn path_finder(
     //    }
     //}
 
-    path
 }
 
 fn distance(x1: i32, y1: i32, x2: i32, y2: i32) -> i32 {

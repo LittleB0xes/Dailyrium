@@ -48,11 +48,17 @@ impl Game {
     }
 
     pub fn tick(&mut self) {
+
+        // All game's update her 
         let mut visible_tile: Vec<(i32, i32)> = Vec::new();
+        
+        // Player turn
         if !self.manor_turn {
             self.manor_turn = self.hero.update(&self.current_stage);
             visible_tile = fov_raycast(self.hero.x, self.hero.y, 10, &mut self.current_stage.stage_map, self.current_stage.width, self.current_stage.height);
-        } else {
+        }
+        // Manor and monster turn
+        else {
             self.turn += 1;
             for monster in self.living_entities.iter_mut() {
                 monster.update(&mut self.current_stage)
@@ -67,12 +73,18 @@ impl Game {
 
         }
 
+
+        // All drawing stuff below
+
         // Clear all the scene
         self.terminal.bg_color(BLACK);
         self.terminal.layer(1);
         self.terminal.fill(' ' as u16);
         self.terminal.layer(0);
         self.terminal.fill(' ' as u16);
+
+
+        // Manor, player, monster... on layer 0
         // Place display
         for element in self.current_stage.stage_map.iter_mut() {
             if element.seen {
@@ -132,20 +144,34 @@ impl Game {
         let mouse_x = (mouse_position().0 / 16.0) as i32;
         let mouse_y = (mouse_position().1 / 16.0) as i32;
         let mouse = format!("Mouse: {}, {}", mouse_x, mouse_y);
-        let path = path_finder(self.hero.x, self.hero.y, mouse_x, mouse_y, &self.current_stage.stage_map, self.current_stage.width, self.current_stage.height);
+        let path_option = path_finder(self.hero.x, self.hero.y, mouse_x, mouse_y, &self.current_stage.stage_map, self.current_stage.width, self.current_stage.height);
+        
+        // HUD info on layer 1
         self.terminal.layer(1);
-        for t in path.iter() {
-            self.terminal.put_ex(
-                t.0 as u32,
-                t.1 as u32,
-                ' ' as u16,
-                WHITE,
-                Color::new(0.9, 0.8, 0.0, 0.3),
-            );
 
+        // Path finder result (if ther has)
+        match path_option {
+            Some(path) => {
+                for t in path.iter() {
+                    self.terminal.put_ex(
+                    t.0 as u32,
+                    t.1 as u32,
+                    ' ' as u16,
+                    WHITE,
+                    Color::new(0.9, 0.8, 0.0, 0.3),
+                    );
+                };
+
+                if is_mouse_button_pressed(MouseButton::Left) {
+                    self.hero.set_autorun(path);
+                }
+            },
+            None =>{},
         }
+        // Show the path
+        
         self.terminal.layer(0);
-        self.terminal.print(0, 1, mouse);
+        //self.terminal.print(0, 1, mouse);
         self.terminal.render(self.texture);
     }
 }
