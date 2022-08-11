@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 
+mod termquad;
 mod dailyrium;
 mod architect;
 mod nursery;

@@ -1,8 +1,10 @@
+use std::num::NonZeroI128;
+
 use macroquad::prelude::*;
 use macroquad::rand::gen_range;
 
 use crate::architect::{Stage, GenerationType};
-use crate::dailyrium::terminal::Terminal;
+use crate::termquad::Terminal;
 use crate::dailyrium::utils::*;
 use crate::dailyrium::pathfinder::path_finder;
 use crate::hero::Hero;
@@ -141,10 +143,20 @@ impl Game {
         clear_background(BLACK);
         let fps = format!("fps: {}", get_fps() as u32);
         //self.terminal.print(0, 0, fps);
+        
+        
+        // Pathfinding
         let mouse_x = (mouse_position().0 / 16.0) as i32;
         let mouse_y = (mouse_position().1 / 16.0) as i32;
-        let mouse = format!("Mouse: {}, {}", mouse_x, mouse_y);
-        let path_option = path_finder(self.hero.x, self.hero.y, mouse_x, mouse_y, &self.current_stage.stage_map, self.current_stage.width, self.current_stage.height);
+
+        let mut path_option: Option<Vec<(i32, i32)>> =  None;
+        
+        let width = self.current_stage.width;
+        let height = self.current_stage.height;
+        if inside_rect(mouse_x, mouse_y, 0, 0, width-1, height-1) && self.current_stage.stage_map[(mouse_x + mouse_y * width) as usize].crossable && self.current_stage.stage_map[(mouse_x + mouse_y * width) as usize].visited {
+            path_option = path_finder(self.hero.x, self.hero.y, mouse_x, mouse_y, &self.current_stage.stage_map, width, height);
+            
+        }
         
         // HUD info on layer 1
         self.terminal.layer(1);

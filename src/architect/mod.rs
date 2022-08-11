@@ -9,7 +9,8 @@ use building_elements::*;
 
 pub enum GenerationType {
     Random,
-    Room
+    Room,
+    Cave,
 }
 
 
@@ -35,7 +36,8 @@ impl Stage {
 
         let stage_map = match generation_type {
             GenerationType::Random => random_generation(width, height),
-            GenerationType::Room => room_stage_generation(width, height),
+            GenerationType::Cave => cave_stage_generation(width, height),
+            _ => random_generation(width, height),
         };        
 
         Self {
@@ -48,6 +50,7 @@ impl Stage {
     }
 }
 
+/// Random stage generation. Unuseful. Just for testing
 fn random_generation(width: i32, height: i32) -> Vec<Element> {
     let mut stage_map = Vec::new();
     for index in 0..width*height {
@@ -69,17 +72,15 @@ fn random_generation(width: i32, height: i32) -> Vec<Element> {
     stage_map
 }
 
-fn room_stage_generation(width: i32, height: i32) -> Vec<Element> {
 
-    
-
+/// Cave generation
+fn cave_stage_generation(width: i32, height: i32) -> Vec<Element> {
     let mut stage_map = Vec::new();
     
     // First, fill all the map with wall
     for i in 0..(width * height) as usize {
         stage_map.push(Element::new(i as i32 % width, i as i32 / width, ElementType::Wall));
     }
-
 
     // Cave
     //let h_zone = 20;

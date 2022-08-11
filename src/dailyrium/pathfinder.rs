@@ -44,10 +44,7 @@ pub fn path_finder(
     let mut id: i32 = 0;
 
     // Check mouse position
-    if inside_rect(x_mouse, y_mouse, 0, 0, w-1, h-1)
-        && level_map[(x_mouse + y_mouse * w) as usize].crossable
-        && level_map[(x_mouse + y_mouse * w) as usize].visited
-    {
+    if inside_rect(x_mouse, y_mouse, 0, 0, w-1, h-1) {
         let mut cycle = 0;
         while !open_list.is_empty() {
             // Add a depth limit for path finding (to avoid infinite loop)
