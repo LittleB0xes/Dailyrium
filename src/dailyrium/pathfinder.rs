@@ -19,11 +19,12 @@ pub fn path_finder(
         y: i32,
         f: i32,
         g: i32,
+        h: i32,
         parent: i32,
     };
 
     const MAX_CYCLE: i32 = 4000;
-    let mut path = Vec::new();
+    //let mut path = Vec::new();
 
     let mut open_list: Vec<Node> = Vec::new();
     let mut closed_list: Vec<Node> = Vec::new();
@@ -34,6 +35,7 @@ pub fn path_finder(
         y: y_entity,
         f: 0,
         g: 0,
+        h: distance(x_entity, y_entity, x_mouse, y_mouse),
         id: 0,
         parent: -1,
     });
@@ -107,38 +109,33 @@ pub fn path_finder(
             }
 
             for c in children.iter() {
-                // Zap node who are already in closed list
-                if closed_list.iter().any(|&n| n.x == c.0 && n.y == c.1) {
-                    continue;
-                }
                 let g = current_node.g + 1;
                 let h = distance(c.0, c.1, x_mouse, y_mouse);
                 let f = g + h;
-
-                let mut out = false;
-
-                // Just keep the best node if it's already in open list
-                for op in open_list.iter() {
-                    if op.x == c.0 && op.y == c.1 && op.g < g {
-                        out = true;
-                    }
-                }
-                if out {
+                // Zap node who are already in closed list
+                if closed_list.iter().any(|&n| n.x == c.0 && n.y == c.1 && n.g < g) {
                     continue;
                 }
+
+                if open_list.iter().any(|&n| n.x == c.0 && n.y == c.1 && n.g < g ) {
+                    continue;
+                };
+                id += 1;
 
                 open_list.push(Node {
                     x: c.0,
                     y: c.1,
-                    f: f,
-                    g: g,
-                    id: -1,
+                    f,
+                    g,
+                    h,
+                    id,//: -1,
                     parent: current_node.id,
                 });
             }
         }
     }
 
+    let mut path: Vec<(i32, i32)> = Vec::new();
     // Now, take the best way
     // Go from child to parent until reach the starting point
     if closed_list.len() != 0 {
@@ -154,16 +151,23 @@ pub fn path_finder(
                         y: o.y,
                         f: o.f,
                         g: o.g,
+                        h: o.h,
                         parent: o.parent,
                     };
                 }
             }
         }
     }
+    //if closed_list.len() != 0 {
+    //    for e in closed_list.iter() {
+    //        path.push((e.x, e.y));
+    //    }
+    //}
 
     path
 }
 
 fn distance(x1: i32, y1: i32, x2: i32, y2: i32) -> i32 {
     (x1 - x2).pow(2) + (y1 - y2).pow(2)
+    //(x1 - x2).abs() + (y1 - y2).abs()
 }
