@@ -1,5 +1,3 @@
-use std::num::NonZeroI128;
-
 use macroquad::prelude::*;
 use macroquad::rand::gen_range;
 
@@ -12,7 +10,6 @@ use crate::nursery::*;
 
 pub struct Game {
     terminal: Terminal,
-    texture: Texture2D,
     hero: Hero,
     current_stage: Stage,
     living_entities: Vec<LivingEntity>,
@@ -22,10 +19,10 @@ pub struct Game {
 
 impl Game {
     pub fn new() -> Self {
-        let terminal = Terminal::new(80, 45, 16, 16, 1.0, 2);
         let texture =
             Texture2D::from_file_with_format(include_bytes!("../assets/16x16_rounded.png"), None);
         texture.set_filter(FilterMode::Nearest);
+        let terminal = Terminal::new(80, 45, 16, 16, 1.0, 2, texture);
 
         let current_stage = Stage::new(0, 80, 45, GenerationType::Room );
 
@@ -40,7 +37,6 @@ impl Game {
 
         Self {
             terminal,
-            texture,
             hero,
             current_stage,
             turn: 0,
@@ -141,7 +137,7 @@ impl Game {
             self.terminal.pick_bg(self.hero.x as u32, self.hero.y as u32),
         );
         clear_background(BLACK);
-        let fps = format!("fps: {}", get_fps() as u32);
+        //let fps = format!("fps: {}", get_fps() as u32);
         //self.terminal.print(0, 0, fps);
         
         
@@ -150,7 +146,7 @@ impl Game {
         let mouse_y = (mouse_position().1 / 16.0) as i32;
 
         let mut path_option: Option<Vec<(i32, i32)>> =  None;
-        
+
         let width = self.current_stage.width;
         let height = self.current_stage.height;
         if inside_rect(mouse_x, mouse_y, 0, 0, width-1, height-1) && self.current_stage.stage_map[(mouse_x + mouse_y * width) as usize].crossable && self.current_stage.stage_map[(mouse_x + mouse_y * width) as usize].visited {
@@ -184,6 +180,6 @@ impl Game {
         
         self.terminal.layer(0);
         //self.terminal.print(0, 1, mouse);
-        self.terminal.render(self.texture);
+        self.terminal.render();
     }
 }

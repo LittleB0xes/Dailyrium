@@ -7,31 +7,51 @@ use crate::dailyrium::utils::inside_rect;
 mod behaviour;
 use behaviour::*;
 
-pub enum Behaviour {
-    Waiting,
-    Drunk,
-}
+mod bestiary;
+use bestiary::*;
+
+
+
 
 pub enum EntityType {
+    ClayMold,
     Zomby,
 }
 
 pub struct LivingEntity {
+    entity_type: EntityType,
     pub x: i32,
     pub y: i32,
     pub glyph: u16,
     pub fg_color: Color,
-    pub behaviour: Behaviour
+    pub behaviour: Behaviour,
+    path: Vec<(i32,i32)>,
 }
 
 impl LivingEntity {
     pub fn new(x: i32, y: i32, entity_type: EntityType) -> Self {
+        let mut monster_clay_mold = LivingEntity {
+            entity_type: EntityType::ClayMold,
+            x,
+            y,
+            glyph: '?' as u16,
+            fg_color: WHITE,
+            behaviour: Behaviour::Waiting,
+            path: Vec::new(),
+
+        };
         match entity_type {
-            EntityType::Zomby => create_zomby(x, y),
+            EntityType::Zomby => create_zomby(&mut monster_clay_mold),
+            _ => {},
         }
+
+        monster_clay_mold
     }
 
     pub fn update(&mut self, stage: &mut Stage) {
+
+       
+
         match self.behaviour {
             Behaviour::Drunk =>{self.move_to(drunk_walk(), stage)},
             _ => {}
@@ -48,15 +68,7 @@ impl LivingEntity {
     }
 }
 
-fn create_zomby(x: i32, y: i32) -> LivingEntity {
-    LivingEntity {
-        x,
-        y,
-        glyph: 'Z' as u16,
-        fg_color: RED,
-        behaviour: Behaviour::Drunk
-    }
-}
+
 
 pub fn spawn_monsters(amount: u32, stage: &Stage) -> Vec<LivingEntity> {
     let mut living_entities: Vec<LivingEntity> = Vec::new();

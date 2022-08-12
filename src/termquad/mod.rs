@@ -39,6 +39,7 @@ pub struct Terminal {
     layer_max: u32,
     current_layer: u32,
     layers: Vec<Layer>,
+    texture: Texture2D,
 }
 
 impl Terminal {
@@ -50,6 +51,7 @@ impl Terminal {
         cell_height: u32,
         scale: f32,
         number_of_layer: u32,
+        texture: Texture2D,
     ) -> Terminal {
         let mut all_layers: Vec<Layer> = Vec::new();
         for layer in 0..number_of_layer {
@@ -91,6 +93,7 @@ impl Terminal {
             layer_max: number_of_layer,
             current_layer: 0,
             layers: all_layers,
+            texture,
         }
     }
 
@@ -187,17 +190,17 @@ impl Terminal {
     }
 
     // All Terminal's layers rendering
-    pub fn render(&self, texture: Texture2D) {
+    pub fn render(&self) {
         for layer_index in 0..self.layer_max {
             for index in 0..self.width * self.height {
                 let cell_to_draw = self.layers[layer_index as usize].data[index as usize];
-                self.draw_cell(texture, cell_to_draw);
+                self.draw_cell(cell_to_draw);
             }
         }
     }
 
     // draw a cell (foreground and background)
-    fn draw_cell(&self, texture: Texture2D, cell: Cell) {
+    fn draw_cell(&self, cell: Cell) {
         let bg_draw_param = DrawTextureParams {
             dest_size: Some(Vec2::new(
                 self.scale * self.cell_width as f32,
@@ -231,14 +234,14 @@ impl Terminal {
             pivot: None,
         };
         draw_texture_ex(
-            texture,
+            self.texture,
             (cell.x * self.cell_width) as f32 * self.scale,
             (cell.y * self.cell_height) as f32 * self.scale,
             cell.bg_color,
             bg_draw_param,
         );
         draw_texture_ex(
-            texture,
+            self.texture,
             (cell.x * self.cell_width) as f32 * self.scale,
             (cell.y * self.cell_height) as f32 * self.scale,
             cell.fg_color,

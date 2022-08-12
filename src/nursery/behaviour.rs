@@ -1,5 +1,9 @@
 use::macroquad::rand::rand;
 
+pub enum Behaviour {
+    Waiting,
+    Drunk,
+}
 /// Move behavour : Totaly random walk
 pub fn drunk_walk() -> (i32, i32) {
     let alea = rand()%4;
