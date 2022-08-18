@@ -14,9 +14,21 @@ pub enum GenerationType {
 }
 
 
-struct Manor {
-    stages_number: u32,
-    stages: Stage,
+pub struct Manor {
+    pub stages_number: u32,
+    pub stages: Vec<Stage>,
+}
+
+impl Manor {
+    pub fn new(width: i32, height: i32, amount: u32) -> Self {
+        let mut stages: Vec<Stage> = Vec::new();
+        for i in 0..amount {
+            stages.push(Stage::new(i, width, height, GenerationType::Cave));
+        }
+
+        Self { stages_number: amount, stages }
+
+    }
 }
 
 pub struct Stage {
@@ -48,6 +60,20 @@ impl Stage {
             living_entities: Vec::new(),
         }
     }
+}
+
+/// Basic room for testing purpose
+fn test_room_generation(width: i32, height: i32) -> Vec<Element> {
+    let mut stage_map: Vec<Element> = Vec::new();
+    for index in 0..width * height {
+        let x: i32 = index % width;
+        let y: i32 = index / width;
+        let new_element: Element = Element::new(x, y, ElementType::Floor);
+
+        stage_map.push(new_element);
+    }
+
+    stage_map
 }
 
 /// Random stage generation. Unuseful. Just for testing

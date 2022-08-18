@@ -22,7 +22,7 @@ pub fn path_finder(
         g: i32,
         h: i32,
         parent: i32,
-    };
+    }
 
     const MAX_CYCLE: i32 = 4000;
     //let mut path = Vec::new();

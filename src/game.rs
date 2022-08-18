@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 use macroquad::rand::gen_range;
 
-use crate::architect::{Stage, GenerationType};
+use crate::architect::{Stage, GenerationType, Manor};
 use crate::termquad::Terminal;
 use crate::dailyrium::utils::*;
 use crate::dailyrium::pathfinder::path_finder;
@@ -11,58 +11,77 @@ use crate::nursery::*;
 pub struct Game {
     terminal: Terminal,
     hero: Hero,
-    current_stage: Stage,
+    manor: Manor,
     living_entities: Vec<LivingEntity>,
     turn: u32,
     manor_turn: bool,
+    current_stage_id: usize,
 }
 
 impl Game {
     pub fn new() -> Self {
+
+        // Terminal creation
         let texture =
-            Texture2D::from_file_with_format(include_bytes!("../assets/16x16_rounded.png"), None);
+            Texture2D::from_file_with_format(include_bytes!("../assets/16x16_sm.png"), None);
         texture.set_filter(FilterMode::Nearest);
         let terminal = Terminal::new(80, 45, 16, 16, 1.0, 2, texture);
 
-        let current_stage = Stage::new(0, 80, 45, GenerationType::Room );
 
-        let mut x_candidate = gen_range(0, current_stage.width - 1);
-        let mut y_candidate = gen_range(0, current_stage.height - 1);
-        while !current_stage.stage_map[(x_candidate + y_candidate * current_stage.width) as usize ].crossable {
-            x_candidate = gen_range(0, current_stage.width - 1);
-            y_candidate = gen_range(0, current_stage.height - 1);
+        let manor: Manor = Manor::new(80, 45, 2);
+        // Level création. For the moment, just one flat level
+
+
+        // Search a free place to spawn the hero
+        let mut x_candidate = gen_range(0, manor.stages[0].width - 1);
+        let mut y_candidate = gen_range(0, manor.stages[0].height - 1);
+        while !manor.stages[0].stage_map[(x_candidate + y_candidate * manor.stages[0].width) as usize ].crossable {
+            x_candidate = gen_range(0, manor.stages[0].width - 1);
+            y_candidate = gen_range(0, manor.stages[0].height - 1);
         }
+
+        // Create the hero ...
         let hero = Hero::new(x_candidate, y_candidate);
-        let living_entities = spawn_monsters(20, &current_stage);
+
+        //... and spawn some test monster
+        let living_entities = spawn_monsters(20, &manor.stages[0]);
 
         Self {
             terminal,
             hero,
-            current_stage,
             turn: 0,
             manor_turn: false,
             living_entities,
+            manor: Manor::new(80, 45, 2),
+            current_stage_id: 0,
         }
     }
 
     pub fn tick(&mut self) {
-
+        let stage_id = self.current_stage_id;
+        if is_key_pressed(KeyCode::A) {
+            //self.current_stage_id
+        }
         // All game's update her 
+
+        // all tile in the player fov
         let mut visible_tile: Vec<(i32, i32)> = Vec::new();
         
         // Player turn
         if !self.manor_turn {
-            self.manor_turn = self.hero.update(&self.current_stage);
-            visible_tile = fov_raycast(self.hero.x, self.hero.y, 10, &mut self.current_stage.stage_map, self.current_stage.width, self.current_stage.height);
+            let width = self.manor.stages[stage_id].width;
+            let height = self.manor.stages[stage_id].height;
+            self.manor_turn = self.hero.update(&self.manor.stages[stage_id]);
+            visible_tile = fov_raycast(self.hero.x, self.hero.y, 10, &mut self.manor.stages[stage_id].stage_map, width, height);
         }
         // Manor and monster turn
         else {
             self.turn += 1;
             for monster in self.living_entities.iter_mut() {
-                monster.update(&mut self.current_stage)
+                monster.update(&mut self.manor.stages[stage_id]);
             }
 
-            for element in self.current_stage.stage_map.iter_mut() {
+            for element in self.manor.stages[stage_id].stage_map.iter_mut() {
                 if element.visited && !element.seen {
                     element.alzheimerize();
                 }
@@ -84,7 +103,7 @@ impl Game {
 
         // Manor, player, monster... on layer 0
         // Place display
-        for element in self.current_stage.stage_map.iter_mut() {
+        for element in self.manor.stages[stage_id].stage_map.iter_mut() {
             if element.seen {
                 let dist = (((self.hero.x - element.x).pow(2) + (self.hero.y - element.y).pow(2)) as f32).sqrt();
                 let factor = -(1.0 - 0.25) / 10.0 * dist + 1.0;
@@ -147,10 +166,10 @@ impl Game {
 
         let mut path_option: Option<Vec<(i32, i32)>> =  None;
 
-        let width = self.current_stage.width;
-        let height = self.current_stage.height;
-        if inside_rect(mouse_x, mouse_y, 0, 0, width-1, height-1) && self.current_stage.stage_map[(mouse_x + mouse_y * width) as usize].crossable && self.current_stage.stage_map[(mouse_x + mouse_y * width) as usize].visited {
-            path_option = path_finder(self.hero.x, self.hero.y, mouse_x, mouse_y, &self.current_stage.stage_map, width, height);
+        let width =  self.manor.stages[stage_id].width;
+        let height = self.manor.stages[stage_id].height;
+        if inside_rect(mouse_x, mouse_y, 0, 0, width-1, height-1) && self.manor.stages[stage_id].stage_map[(mouse_x + mouse_y * width) as usize].crossable && self.manor.stages[stage_id].stage_map[(mouse_x + mouse_y * width) as usize].visited {
+            path_option = path_finder(self.hero.x, self.hero.y, mouse_x, mouse_y, &self.manor.stages[stage_id].stage_map, width, height);
             
         }
         
