@@ -1,5 +1,6 @@
 use macroquad::prelude::*;
 use macroquad::rand::gen_range;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::architect::{Stage, GenerationType, Manor};
 use crate::termquad::Terminal;
@@ -12,7 +13,7 @@ pub struct Game {
     terminal: Terminal,
     hero: Hero,
     manor: Manor,
-    living_entities: Vec<LivingEntity>,
+    living_entities: Vec<Vec<LivingEntity>>,
     turn: u32,
     manor_turn: bool,
     current_stage_id: usize,
@@ -20,6 +21,11 @@ pub struct Game {
 
 impl Game {
     pub fn new() -> Self {
+
+        rand::srand(SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_millis() as u64);
 
         // Terminal creation
         let texture =
@@ -29,7 +35,6 @@ impl Game {
 
 
         let manor: Manor = Manor::new(80, 45, 2);
-        // Level création. For the moment, just one flat level
 
 
         // Search a free place to spawn the hero
@@ -44,7 +49,12 @@ impl Game {
         let hero = Hero::new(x_candidate, y_candidate);
 
         //... and spawn some test monster
-        let living_entities = spawn_monsters(20, &manor.stages[0]);
+        // each element of living_entities works with a manor stage (index of living_entities is an ID's level)
+        let mut living_entities: Vec<Vec<LivingEntity>> = Vec::new();
+        for i in 0..manor.stages_number {
+            let entities = spawn_monsters(20, &manor.stages[i as usize]);
+            living_entities.push(entities);
+        }
 
         Self {
             terminal,
@@ -60,7 +70,7 @@ impl Game {
     pub fn tick(&mut self) {
         let stage_id = self.current_stage_id;
         if is_key_pressed(KeyCode::A) {
-            //self.current_stage_id
+            self.current_stage_id += 1;
         }
         // All game's update her 
 
@@ -73,12 +83,15 @@ impl Game {
             let height = self.manor.stages[stage_id].height;
             self.manor_turn = self.hero.update(&self.manor.stages[stage_id]);
             visible_tile = fov_raycast(self.hero.x, self.hero.y, 10, &mut self.manor.stages[stage_id].stage_map, width, height);
-        }
+            }
         // Manor and monster turn
         else {
             self.turn += 1;
-            for monster in self.living_entities.iter_mut() {
-                monster.update(&mut self.manor.stages[stage_id]);
+            for list in self.living_entities.iter_mut() {
+                for monster in list.iter_mut() {
+
+                    monster.update(&mut self.manor.stages[stage_id]);
+                }
             }
 
             for element in self.manor.stages[stage_id].stage_map.iter_mut() {
@@ -132,7 +145,7 @@ impl Game {
             }
         }
 
-        for monster in self.living_entities.iter() {
+        for monster in self.living_entities[self.current_stage_id].iter() {
             if visible_tile.contains(&(monster.x, monster.y)) {
                 let dist = (((self.hero.x - monster.x).pow(2) + (self.hero.y - monster.y).pow(2)) as f32).sqrt();
                 let factor = -(1.0 - 0.25) / 10.0 * dist + 1.0;

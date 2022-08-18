@@ -11,6 +11,7 @@ pub enum GenerationType {
     Random,
     Room,
     Cave,
+    Test,
 }
 
 
@@ -41,14 +42,11 @@ pub struct Stage {
 
 impl Stage {
     pub fn new(stage_id: u32, width: i32, height: i32, generation_type: GenerationType) -> Self{
-        rand::srand(SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_millis() as u64);
 
         let stage_map = match generation_type {
             GenerationType::Random => random_generation(width, height),
             GenerationType::Cave => cave_stage_generation(width, height),
+            GenerationType::Test => test_room_generation(width, height),
             _ => random_generation(width, height),
         };        
 
