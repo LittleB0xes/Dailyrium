@@ -13,6 +13,8 @@ pub struct Hero {
     pub turn_finish: bool,
     path: Vec<(i32, i32)>,
     autorun: bool,
+    pub climbing: Option<i32>,
+
 }
 
 impl Hero {
@@ -26,6 +28,7 @@ impl Hero {
             fg_color: WHITE,
             turn_finish: false,
             autorun: false,
+            climbing: None,
             path: Vec::new(),
         }
     }

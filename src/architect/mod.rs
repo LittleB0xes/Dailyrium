@@ -1,6 +1,5 @@
 use crate::rand::rand;
 use macroquad::prelude::*;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::nursery::LivingEntity;
 

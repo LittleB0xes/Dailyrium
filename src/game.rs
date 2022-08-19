@@ -72,13 +72,20 @@ impl Game {
         if is_key_pressed(KeyCode::A) {
             self.current_stage_id += 1;
         }
-        // All game's update her 
+         
 
         // all tile in the player fov
         let mut visible_tile: Vec<(i32, i32)> = Vec::new();
         
         // Player turn
         if !self.manor_turn {
+
+            // Check if player climbing
+            match self.hero.climbing {
+                Some(value) => {self.current_stage_id += value as usize},
+                None => {}
+            }
+
             let width = self.manor.stages[stage_id].width;
             let height = self.manor.stages[stage_id].height;
             self.manor_turn = self.hero.update(&self.manor.stages[stage_id]);
