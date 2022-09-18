@@ -29,6 +29,7 @@ impl Game {
 
         // Terminal creation
         let texture =
+            //Texture2D::from_file_with_format(include_bytes!("../assets/16x16_sm.png"), None);
             Texture2D::from_file_with_format(include_bytes!("../assets/16x16_sm.png"), None);
         texture.set_filter(FilterMode::Nearest);
         let terminal = Terminal::new(80, 45, 16, 16, 1.0, 2, texture);
@@ -72,7 +73,6 @@ impl Game {
         if is_key_pressed(KeyCode::A) {
             self.current_stage_id += 1;
         }
-         
 
         // all tile in the player fov
         let mut visible_tile: Vec<(i32, i32)> = Vec::new();
@@ -181,8 +181,8 @@ impl Game {
         
         
         // Pathfinding
-        let mouse_x = (mouse_position().0 / 16.0) as i32;
-        let mouse_y = (mouse_position().1 / 16.0) as i32;
+        let mouse_x = (mouse_position().0 / (self.terminal.scale() * self.terminal.cell_width() as f32)) as i32;
+        let mouse_y = (mouse_position().1 / (self.terminal.scale() * self.terminal.cell_height() as f32)) as i32;
 
         let mut path_option: Option<Vec<(i32, i32)>> =  None;
 

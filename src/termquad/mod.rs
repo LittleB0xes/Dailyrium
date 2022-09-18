@@ -97,6 +97,22 @@ impl Terminal {
         }
     }
 
+
+    /// Get scale
+    pub fn scale(&self) -> f32 {
+        self.scale
+    }
+
+    /// Get cell width
+    pub fn cell_width(&self) -> u32 {
+        self.cell_width
+    }
+    
+    /// Get cell height
+    pub fn cell_height(&self) -> u32 {
+        self.cell_height
+    }
+
     /// Set the current active layer
     pub fn layer(&mut self, layer: u32) {
         self.current_layer = layer;
